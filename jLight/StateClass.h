@@ -4,25 +4,16 @@
 
 #include "TStatechart.h"
 
-TStatechart SJoesTriacStateChart;
-TStatechart* PJoesTriacStateChart;
+TStatechart SJLightTriacStateChart;
+TStatechart* PJLightTriacStateChart;
 
 
 
 enum eEventTypes
 {
-	evCharEntered,
-	evF1Pressed,
-	evF2Pressed,
-	evAstPressed,
-	evNumPressed,
 	evTimeOutDurationTimer,
 	evSecondsTick,
-	evStartPressed,
-	evStopPressed,
-	evZeroSignalOK,
 	evAdcTick,
-	evTWIDataReceived,
 	evFatalError
 };
 
@@ -37,7 +28,7 @@ typedef struct  {
 			int8_t  jobType;
 		} zeroAdjustingState;
 	}  evData;
-} CJoesTriacEvent ;
+} CJLightEvent ;
 
 
 
@@ -48,7 +39,7 @@ void startStateCharts();
 void stopStateCharts();
 
 
-bool processTriacEvent(TStatechart* t,CJoesTriacEvent* ev);
+bool processTriacEvent(TStatechart* t,CJLightEvent* ev);
 
 
 

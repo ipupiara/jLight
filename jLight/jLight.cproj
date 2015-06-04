@@ -99,6 +99,24 @@
     <Compile Include="jLight.c">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="stateclass.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="StateClass.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TriacIntr.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TriacIntr.h">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="TStatechart.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="tstatechart.h">
+      <SubType>compile</SubType>
+    </Compile>
   </ItemGroup>
   <Import Project="$(AVRSTUDIO_EXE_PATH)\\Vs\\Compiler.targets" />
 </Project>
