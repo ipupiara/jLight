@@ -6,7 +6,7 @@
 
 
 #include "TriacIntr.h"
-// #include "TriacDefines.h"
+#include "TriacDefines.h"
 // #include "triacPID.h"
 
 #define triggerDelayMax 810     // works properly with 50 Hz Ac
@@ -23,32 +23,6 @@ int16_t secondsDurationTimerRemaining;
 int16_t secondsInDurationTimer;
 
 int8_t adcCnt;
-
-
-
-
-void delay6pnt2d5us(unsigned int enn)
-{
-	//delay approx ( n * 2.5 us ) + 6    at 11.0592  mhz
-	//    6 Plus N Times  2 Dot 5  (  "6pnt2d5"  )
-
-	//n        t    tested on Simulator 2  (PN 28. May 2011)
-
-	//0		6
-	//1		8 - 9
-	//2		11
-	//4		16
-	//8		25 -26
-	//16	45   approx 500 cycles
-
-	//  accurate enough for our keyboard delays
-
-	uint8_t ix;
-	ix= 0;
-
-	while(enn--){
-	}
-}
 
 
 

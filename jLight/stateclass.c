@@ -22,27 +22,19 @@ enum eStates
 	eStateJLightTriac,
 	eStartState = eStateJLightTriac,
 	eStateTriacOperating,
-	eStateAskForCalibration,
-/*	eStateChangeCalibVars,
-	eStateCalibrating,
-	eStateAskingRmsAvg,
-	eStateCalibrateZeroSignal,
-	eStateCalibrateScale,
-	eStateCalibrateLow,
-	eStateCalibrateHigh,
-	eStateTriacIdle,
-	eStateEditIdle,
-	eStateEditAmps,
-	eStateEditDuration,
-	eStateSetup,
-	eStateSetupIdle,
-	eStateSetupAlarmYesNo,
-	eStateSetupAlarmMinutes,
+	eStateStartup,
 	eStateTriacRunning,
-	eStateJobOkDisplay,   
-*/	eStateFatalError,   
+	eStatePrograming,
+	eStatePrepareForRec,
+	eStateRecord,
+	eStateRecInTime,
+	eStateRecTimeLow,
+	eStateRecTimeCritical,
+	eStateRecTimeOut,  
+	eStateFatalError,   
 	eNumberOfStates
 };
+
 
 uStInt evJLightChecker(void)
 {
@@ -65,7 +57,8 @@ uStInt evTriacOperatingChecker(void)
 	return (res); 
 }
 
-void entryAskForCalibrationState(void)
+
+void entryStartupState(void)
 {
 	printf("entry AskForCalibration\n");
 //	displayCalibrationPrompt();
@@ -74,14 +67,14 @@ void entryAskForCalibrationState(void)
 //	startDurationTimer(maxSecsPossible);
 }
 
-void exitAskForCalibrationState(void)
+void exitStartupState(void)
 {
 /*	printf("exit ask calib\n");
 	stopDurationTimer();
 	clr_scr(); */
 }
 
-uStInt evAskForCalibrationChecker(void)
+uStInt evStartupChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 //	printf("check for event in State evStateIdle\n");
@@ -114,6 +107,161 @@ uStInt evAskForCalibrationChecker(void)
 //		debugEvent1Triggered = 1;
 	}   */
 	return (res); 
+}
+
+
+void entryTriacRunningState(void)
+{
+	//	printf("entry FatalError\n");
+	//	printf("**************fatal Error: %s *************************\n",lastFatalErrorString);
+	//	displayFatalError();
+}
+
+void exitTriacRunningState(void)
+{
+	//	printf("exit FatalErro\n");
+}
+
+uStInt evTriacRunningChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State evStateIdle\n");
+
+	return (res);
+}
+
+
+
+void entryProgramingState(void)
+{
+	//	printf("entry Programing\n");
+}
+
+void exitProgramingState(void)
+{
+	//	printf("exit Programing\n");
+}
+
+uStInt evProgramingChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State Programing\n");
+
+	return (res);
+}
+
+
+void entryPrepareForRecState(void)
+{
+	//	printf("entry PrepareForRec\n");
+}
+
+void exitPrepareForRecState(void)
+{
+	//	printf("exit PrepareForRec\n");
+}
+
+uStInt evPrepareForRecChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State PrepareForRec\n");
+
+	return (res);
+}
+
+
+void entryRecordState(void)
+{
+	//	printf("entry Record\n");
+}
+
+void exitRecordState(void)
+{
+	//	printf("exit Record\n");
+}
+
+uStInt evRecordChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State Record\n");
+
+	return (res);
+}
+
+
+void entryRecInTimeState(void)
+{
+	//	printf("entry RecInTime\n");
+}
+
+void exitRecInTimeState(void)
+{
+	//	printf("exit RecInTime\n");
+}
+
+uStInt evRecInTimeChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State RecInTime\n");
+
+	return (res);
+}
+
+
+void entryRecTimeLowState(void)
+{
+	//	printf("entry RecTimeLow\n");
+}
+
+void exitRecTimeLowState(void)
+{
+	//	printf("exit RecTimeLow\n");
+}
+
+uStInt evRecTimeLowChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State RecTimeLow\n");
+
+	return (res);
+}
+
+
+void entryRecTimeCriticalState(void)
+{
+	//	printf("entry RecTimeCritical\n");
+}
+
+void exitRecTimeCriticalState(void)
+{
+	//	printf("exit RecTimeCritical\n");
+}
+
+uStInt evRecTimeCriticalChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State RecTimeCritical\n");
+
+	return (res);
+}
+
+
+void entryRecTimeOutState(void)
+{
+	//	printf("entry RecTimeOut\n");
+}
+
+void exitRecTimeOutState(void)
+{
+	//	printf("exit RecTimeOut\n");
+}
+
+uStInt evRecTimeOutChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State RecTimeOut\n");
+
+	return (res);
 }
 
 
@@ -163,31 +311,113 @@ xStateType xaStates[eNumberOfStates] = {
  	tfNull},     // exiting state
 
  	{eStateTriacOperating,
- 	eStateJLightTriac,
- 	eStateAskForCalibration,
- 	0,									
- 	evTriacOperatingChecker,
- 	tfNull,
- 	tfNull,
+ 		eStateJLightTriac,
+ 		eStateStartup,
+ 		0,									
+ 		evTriacOperatingChecker,
+ 		tfNull,
+ 		tfNull,
  	tfNull},
 
- 	{eStateAskForCalibration,
- 	eStateTriacOperating,
- 	-1,
- 	0,									
- 	evAskForCalibrationChecker,
- 	tfNull,
- 	entryAskForCalibrationState,
- 	exitAskForCalibrationState},
+ 	{eStateStartup,
+ 		eStateTriacOperating,
+ 		-1,
+ 		0,									
+ 		evStartupChecker,
+ 		tfNull,
+ 		entryStartupState,
+ 		exitStartupState
+	},
+	 
+	{eStateTriacRunning,
+		eStateTriacOperating,
+		-1,
+		0,
+		evTriacRunningChecker,
+		tfNull,
+		entryTriacRunningState,
+		exitTriacRunningState
+	},
+
+	{eStatePrograming,
+		eStateTriacOperating ,
+		eStatePrepareForRec,
+		0,
+		evProgramingChecker,
+		tfNull,
+		entryProgramingState,
+		exitProgramingState
+	},	 
+	
+	{eStatePrepareForRec,
+		eStatePrograming ,
+		-1,
+		0,
+		evPrepareForRecChecker,
+		tfNull,
+		entryPrepareForRecState,
+		exitPrepareForRecState
+	},
+	
+	{eStateRecord,
+		eStatePrograming ,
+		eStateRecInTime,
+		0,
+		evRecordChecker,
+		tfNull,
+		entryRecordState,
+		exitRecordState
+	},
+	
+	{eStateRecInTime,
+		eStateRecord ,
+		-1,
+		0,
+		evRecInTimeChecker,
+		tfNull,
+		entryRecInTimeState,
+		exitRecInTimeState
+	},
+
+	{eStateRecTimeLow,
+		eStateRecord ,
+		-1,
+		0,
+		evRecTimeLowChecker,
+		tfNull,
+		entryRecTimeLowState,
+		exitRecTimeLowState
+	},
+	
+	{eStateRecTimeCritical,
+		eStateRecord ,
+		-1,
+		0,
+		evRecTimeCriticalChecker,
+		tfNull,
+		entryRecTimeCriticalState,
+		exitRecTimeCriticalState
+	},
+	 
+	{eStateRecTimeOut,
+		eStateRecord ,
+		-1,
+		0,
+		evRecTimeOutChecker,
+		tfNull,
+		entryRecTimeOutState,
+		exitRecTimeOutState
+	},
 	 
 	{eStateFatalError,
- 	eStateJLightTriac,
- 	-1,
- 	0,
- 	evFatalErrorChecker,
- 	tfNull,
- 	entryFatalErrorState,
- 	exitFatalErrorState}	 	 	 
+ 		eStateJLightTriac,
+ 		-1,
+ 		0,
+ 		evFatalErrorChecker,
+ 		tfNull,
+ 		entryFatalErrorState,
+ 		exitFatalErrorState
+	}	 	 	 
 };
 
 
