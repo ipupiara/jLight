@@ -47,9 +47,29 @@ void delay6pnt2d5us(unsigned int n);   // description in TriacDefines.c
 
 int8_t fatalErrorOccurred;
 
+int8_t eepromAccessErrorOcurred;
 
 void restorePersistentData();
 
 #define zeroAdjustATtinyID  0x10
+
+	
+	typedef struct minuteBuffer
+	{
+		union {
+			struct data {
+				uint16_t  amtEntries;
+				uint16_t buffer [600];
+			} data;
+			uint8_t  dataBytes [600*2 + 2];
+		} ;
+	} minuteBuffer;
+	
+	typedef minuteBuffer * pMinuteBuffer;
+	
+	int8_t syncStoreMinuteBuffer(pMinuteBuffer pMinB);
+	
+	int8_t syncRestoreMinuteBuffer(pMinuteBuffer pMinB);
+
 
 #endif

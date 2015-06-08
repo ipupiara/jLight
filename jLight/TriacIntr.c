@@ -24,7 +24,33 @@ int16_t secondsInDurationTimer;
 
 int8_t adcCnt;
 
+uint16_t currentHalfSec;
+uint8_t currentHalf50;
 
+void calcInterpolation()
+{
+}
+
+void resetInterpolation()
+{
+	currentHalfSec = 0;
+	currentHalf50 = 0;
+	calcInterpolation();
+}
+
+void stepInterpolation()
+{
+	++ currentHalf50;
+	if(currentHalf50 > 49)
+	{
+		++ currentHalfSec;
+		currentHalf50 = 0;
+		if(currentHalfSec >239) {
+			currentHalfSec = 0;
+		}
+	}
+	calcInterpolation();
+}
 
 
 int16_t getSecondsDurationTimerRemaining()
@@ -196,6 +222,7 @@ ISR(TIMER1_COMPA_vect)
 
 void initInterrupts()
 {
+	pCurrentMinuteBuffer = &currentMinuteBuffer;
 // Ext. Interrupt
 
 		DDRA = 0b11110000;    // set pin 7 to 4 of port A as output for digital poti (zero adj)
@@ -310,7 +337,7 @@ void stopAmpsADC()
 
 void startTriacRun()
 {
-//	resetPID();
+	resetInterpolation();
 	startAmpsADC();
 	EIFR = 0x00;
 	EIMSK = 0x01;  				// start external interrupt (zero pass detection)

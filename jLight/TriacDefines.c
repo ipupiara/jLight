@@ -48,7 +48,7 @@ unsigned char EEPROM_read(unsigned int uiAddress)
 	return EEDR;
 }
 
-void eeprom_write_byte (uint8_t *adr, uint8_t val)
+void eeprom_write_byte (uint16_t *adr, uint8_t val)
 {
 	uint8_t checkRes = 0;
 	uint16_t adre = (uint16_t) adr;
@@ -61,7 +61,7 @@ void eeprom_write_byte (uint8_t *adr, uint8_t val)
 	}
 }
 
-uint8_t eeprom_read_byte (const uint8_t *adr)
+uint8_t eeprom_read_byte (const uint16_t *adr)
 {
 	unsigned char bu;
 	uint16_t adre = (uint16_t) adr;
@@ -96,6 +96,10 @@ void eeprom_write_word(uint16_t* adr, uint16_t val)
 
 #endif
 
+
+
+
+
 void delayEmptyProc ()
 {
 }
@@ -120,7 +124,7 @@ void delay6pnt2d5us(unsigned int enn)
 
 uint8_t ix;  
 	ix= 0;
-
+	++ix;
   while(enn--){
   }
 } 
@@ -215,8 +219,33 @@ void restorePersistentData()
 	ampsInputPin = eeprom_read_byte((uint8_t*)ampsInputPinEEPROMpos);	
 	if ( (ampsInputPin < 0x00) || (ampsInputPin > 0x01)) { storeAmpsInputPin(0x00);}   
 */
-
+	eepromAccessErrorOcurred = 0;
     fatalErrorOccurred = 0;
+	
+}
+ 
+int8_t syncStoreMinuteBuffer(pMinuteBuffer pMinB)
+{
+	int8_t res = 0;
+	uint16_t cnt;
+	
+	for (cnt = 0; cnt < sizeof(minuteBuffer) ; ++ cnt)  {
+		eeprom_write_byte( (uint16_t*) cnt, pMinB->dataBytes[cnt] );   
+	}
+	return res;
+}
+	
+int8_t syncRestoreMinuteBuffer(pMinuteBuffer pMinB)
+{
+	int8_t res = 0;
+	uint16_t cnt;
+	
+	for (cnt = 0; cnt < sizeof(minuteBuffer); ++ cnt)  {
+		
+		pMinB->dataBytes[cnt] =  eeprom_read_byte( (uint16_t*) cnt);   
+	}		
+	return res;
 }
 
+ 
 

@@ -6,6 +6,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/atomic.h>
+#include "TriacDefines.h"
 	
 	
 int8_t durationTimerReachead;
@@ -37,6 +38,9 @@ void stopTriacRun();
 void setCompletionAlarmOn();
 void setCompletionAlarmOff();
 void toggleCompletionAlarm();
+
+minuteBuffer currentMinuteBuffer;
+pMinuteBuffer pCurrentMinuteBuffer;
 
 
 /*
