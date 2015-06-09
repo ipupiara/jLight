@@ -111,7 +111,7 @@ void immediateStopTriacTriggerDelay()   // must run protected between cli and se
 	sei();
 }	  
 
-void setTriacFireDuration(int16_t cmsecs)
+void setTriacFireDuration(uint16_t cmsecs)
 {
 	cli();
 	if (cmsecs < triggerDelayMax) {
@@ -126,6 +126,14 @@ void setTriacFireDuration(int16_t cmsecs)
 	sei();
 }
 
+uint16_t getTriacFireDuration()
+{
+	uint16_t result;
+	cli();
+		result = triacFireDurationCms;
+	sei();
+	return result;	
+}
 
 /*
 

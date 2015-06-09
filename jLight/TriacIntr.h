@@ -32,7 +32,9 @@ int16_t getSecondsInDurationTimer();
 void stopDurationTimer();
 
 void initInterrupts();
-void setTriacFireDuration(int16_t cmsecs);
+void setTriacFireDuration(uint16_t cmsecs);
+uint16_t getTriacFireDuration();
+
 void startTriacRun();
 void stopTriacRun();
 

@@ -14,8 +14,16 @@
 #include <util/atomic.h>
 #include "TriacDefines.h"
 
+enum recMode  {
+	rec,
+	play
+	};
+void setRecMode(uint8_t recM);	
+uint8_t currentRecMode;
+
 uint16_t currentSec;
 uint8_t currentSec10;
+uint16_t currentPos;
 minuteBuffer currentMinuteBuffer;
 pMinuteBuffer pCurrentMinuteBuffer;
 
