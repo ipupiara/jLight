@@ -22,6 +22,23 @@ void calcInterpolation()
 	}
 }
 
+void keepCurrentValue()
+{
+	uint16_t  nextTriacValue;   // variable used for debugging purpose
+
+	nextTriacValue = getTriacFireDuration();
+	pCurrentMinuteBuffer->data.buffer[currentPos] = nextTriacValue;
+	++pCurrentMinuteBuffer->data.amtEntries;
+}
+
+void retrieveNextValue()
+{
+	uint16_t  nextTriacValue;   // variable used for debugging purpose
+
+	nextTriacValue = pCurrentMinuteBuffer->data.buffer[currentPos];
+	setTriacFireDuration(nextTriacValue);
+}
+
 void resetInterpolation()
 {
 	pCurrentMinuteBuffer = &currentMinuteBuffer;
@@ -34,19 +51,31 @@ void stepInterpolation()
 {
 	++ currentSec10;
 	++ currentPos;
-	if(currentSec10 > 9)
-	{
-		++ currentSec;
-		currentSec10 = 0;
-		if(currentSec > currentMinuteBuffer.data.amtEntries) {
-			currentSec = 0;
-			currentPos = 0;
+	
+	if (currentRecMode == play) {
+		if(currentSec10 > 9)
+		{
+			++ currentSec;
+			currentSec10 = 0;
+			if(currentPos >= currentMinuteBuffer.data.amtEntries) {
+				currentSec = 0;
+				currentPos = 0;
+			}
 		}
+		retrieveNextValue();
+	} else if(currentRecMode == rec)
+	{
+		keepCurrentValue();
 	}
-	calcInterpolation();
+//	calcInterpolation();
 }
 
 void setRecMode(uint8_t recM)
 {
 	currentRecMode = recM;
+}
+
+void setTriacDelayByADC()
+{
+	
 }

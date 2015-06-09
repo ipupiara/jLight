@@ -34,5 +34,6 @@ void resetInterpolation();
 
 void stepInterpolation();
 
+void setTriacDelayByADC();
 
 #endif /* TRIACINTERPOLATION_H_ */
