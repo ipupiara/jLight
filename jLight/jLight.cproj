@@ -111,6 +111,12 @@
     <Compile Include="TriacDefines.h">
       <SubType>compile</SubType>
     </Compile>
+    <Compile Include="triacInterpolation.c">
+      <SubType>compile</SubType>
+    </Compile>
+    <Compile Include="triacInterpolation.h">
+      <SubType>compile</SubType>
+    </Compile>
     <Compile Include="TriacIntr.c">
       <SubType>compile</SubType>
     </Compile>

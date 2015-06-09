@@ -22,35 +22,11 @@ int16_t secondsDurationTimerRemaining;
 
 int16_t secondsInDurationTimer;
 
-int8_t adcCnt;
+uint8_t adcCnt;
 
-uint16_t currentHalfSec;
-uint8_t currentHalf50;
+uint8_t int0StartCnt;
 
-void calcInterpolation()
-{
-}
 
-void resetInterpolation()
-{
-	currentHalfSec = 0;
-	currentHalf50 = 0;
-	calcInterpolation();
-}
-
-void stepInterpolation()
-{
-	++ currentHalf50;
-	if(currentHalf50 > 49)
-	{
-		++ currentHalfSec;
-		currentHalf50 = 0;
-		if(currentHalfSec >239) {
-			currentHalfSec = 0;
-		}
-	}
-	calcInterpolation();
-}
 
 
 int16_t getSecondsDurationTimerRemaining()
@@ -200,6 +176,13 @@ ISR(INT0_vect)
 		if (triacFireDurationCms > 0)  {
 			startTriacTriggerDelay(  triggerDelayMax - triacFireDurationCms);
 		}
+		++int0StartCnt;
+		if ((int0StartCnt % 10) == 0 ) {
+			sec10Tick = 1;
+			if (int0StartCnt >= 50) {
+				int0StartCnt = 0;
+			}
+		}
 	}
 	sei();		  
 }   
@@ -222,7 +205,6 @@ ISR(TIMER1_COMPA_vect)
 
 void initInterrupts()
 {
-	pCurrentMinuteBuffer = &currentMinuteBuffer;
 // Ext. Interrupt
 
 		DDRA = 0b11110000;    // set pin 7 to 4 of port A as output for digital poti (zero adj)
@@ -262,7 +244,7 @@ void initInterrupts()
 		TIMSK1  = 0x00; // disa  Interrupt 
 		//		TIMSK1   = 0b00000010;  //  Output Compare A Match Interrupt Enable 
 
-// Timer 0    used for ADC triggering  in TriaRunning mode
+// Timer 0    used for ADC triggering  in TriacRunning mode
 	  
 		TCCR0A = 0b00000010;  //  CTC 
 
@@ -337,8 +319,8 @@ void stopAmpsADC()
 
 void startTriacRun()
 {
-	resetInterpolation();
 	startAmpsADC();
+	int0StartCnt = 0;
 	EIFR = 0x00;
 	EIMSK = 0x01;  				// start external interrupt (zero pass detection)
 }

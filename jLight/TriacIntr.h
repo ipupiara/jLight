@@ -13,6 +13,7 @@ int8_t durationTimerReachead;
 int8_t runningSecondsTick;
 
 int8_t adcTick;
+int8_t sec10Tick;
 void startAmpsADC();
 void stopAmpsADC();
 //void setDiffADC();
@@ -38,9 +39,6 @@ void stopTriacRun();
 void setCompletionAlarmOn();
 void setCompletionAlarmOff();
 void toggleCompletionAlarm();
-
-minuteBuffer currentMinuteBuffer;
-pMinuteBuffer pCurrentMinuteBuffer;
 
 
 /*

@@ -61,7 +61,7 @@ void restorePersistentData();
 				uint16_t  amtEntries;
 				uint16_t buffer [600];
 			} data;
-			uint8_t  dataBytes [600*2 + 2];
+			uint8_t  dataBytes [1];
 		} ;
 	} minuteBuffer;
 	
