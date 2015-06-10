@@ -9,26 +9,14 @@
 #include "TriacIntr.h"
 
 
-void calcInterpolation()
+int16_t getAndKeepCurrentValue()
 {
-	uint16_t  nextTriacValue;   // variable used for debugging purpose
-	if (currentRecMode == play) {
-		nextTriacValue = pCurrentMinuteBuffer->data.buffer[currentPos];
-		setTriacFireDuration(nextTriacValue);
-	} else if (currentRecMode == rec) {
-		nextTriacValue = getTriacFireDuration();
-		pCurrentMinuteBuffer->data.buffer[currentPos] = nextTriacValue;
-		++pCurrentMinuteBuffer->data.amtEntries;
-	}
-}
-
-void keepCurrentValue()
-{
-	uint16_t  nextTriacValue;   // variable used for debugging purpose
+	uint16_t  nextTriacValue;  
 
 	nextTriacValue = getTriacFireDuration();
 	pCurrentMinuteBuffer->data.buffer[currentPos] = nextTriacValue;
 	++pCurrentMinuteBuffer->data.amtEntries;
+	return nextTriacValue;
 }
 
 void retrieveNextValue()
@@ -39,12 +27,15 @@ void retrieveNextValue()
 	setTriacFireDuration(nextTriacValue);
 }
 
+
+
 void resetInterpolation()
 {
 	pCurrentMinuteBuffer = &currentMinuteBuffer;
 	currentSec = 0;
 	currentSec10 = 0;
-	calcInterpolation();
+	currentPos = 0;
+	getAndKeepCurrentValue();
 }
 
 void stepInterpolation()
@@ -58,14 +49,18 @@ void stepInterpolation()
 			++ currentSec;
 			currentSec10 = 0;
 			if(currentPos >= currentMinuteBuffer.data.amtEntries) {
-				currentSec = 0;
-				currentPos = 0;
+				resetInterpolation();
 			}
 		}
 		retrieveNextValue();
 	} else if(currentRecMode == rec)
 	{
-		keepCurrentValue();
+		if (currentPos <   maxDataAmt - endGapSize ) {   // tobe reviewed  ??
+			++ currentPos;
+			getAndKeepCurrentValue();
+		}   else{
+			setEndGap();
+		}
 	}
 //	calcInterpolation();
 }
@@ -75,7 +70,23 @@ void setRecMode(uint8_t recM)
 	currentRecMode = recM;
 }
 
-void setTriacDelayByADC()
+ void setTriacDelayByADC()
 {
 	
+}
+
+void setEndGap()
+{
+	int16_t  endDiff;
+	int16_t cnt;
+	int16_t amtSteps;
+	float stepWidth;
+	if ( (endDiff = pCurrentMinuteBuffer->data.buffer[currentPos] -  pCurrentMinuteBuffer->data.buffer[0]) >  5  ){
+		stepWidth = endDiff / ( amtSteps = (endGapSize * 10));
+		for(cnt = 0; cnt < amtSteps; ++ cnt )  {
+			++ currentPos;
+			pCurrentMinuteBuffer->data.buffer[currentPos] =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
+		}
+		pCurrentMinuteBuffer->data.buffer[currentPos] = pCurrentMinuteBuffer->data.buffer[0];
+	}
 }

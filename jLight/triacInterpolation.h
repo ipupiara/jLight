@@ -14,6 +14,9 @@
 #include <util/atomic.h>
 #include "TriacDefines.h"
 
+#define maxDataAmt    57 * 10
+#define endGapSize    2* 10
+
 enum recMode  {
 	rec,
 	play
@@ -28,7 +31,9 @@ minuteBuffer currentMinuteBuffer;
 pMinuteBuffer pCurrentMinuteBuffer;
 
 
-void calcInterpolation();
+//void calcInterpolation();
+
+void setEndGap();
 
 void resetInterpolation();
 

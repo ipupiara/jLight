@@ -42,7 +42,6 @@ void setCompletionAlarmOn();
 void setCompletionAlarmOff();
 void toggleCompletionAlarm();
 
-
 /*
 opto coupler based 0x (zerocross) handling. optocoupler based diode opens at 
 */

@@ -9,7 +9,7 @@
 #include "TriacDefines.h"
 // #include "triacPID.h"
 
-#define triggerDelayMax 810     // works properly with 50 Hz Ac
+//#define triggerDelayMax 810     // works properly with 50 Hz Ac
 
 
 int16_t lastAmpsADCVal;
@@ -398,7 +398,10 @@ void startDurationTimer(int16_t secs)
 void stopDurationTimer()
 {
 	TCCR1B = 0b00001000 ;  // CTC, timer stopped
-	TIMSK1 = 0x00;
+	TIMSK1 = 0x00;void setTriacDelayByADC()
+{
+	
+}
 	
 }
 
@@ -420,6 +423,4 @@ void toggleCompletionAlarm()
 		setCompletionAlarmOn();
 	}
 }
-
-
 
