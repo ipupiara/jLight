@@ -161,7 +161,7 @@ ISR(TIMER2_COMPA_vect)
 }
 
 
-#define pidStepDelays  30
+#define pidStepDelays  2    // 20 reads per second
 
 ISR(ADC_vect)
 {
@@ -327,7 +327,7 @@ void stopAmpsADC()
 
 void startTriacRun()
 {
-	startAmpsADC();
+//	startAmpsADC();
 	int0StartCnt = 0;
 	EIFR = 0x00;
 	EIMSK = 0x01;  				// start external interrupt (zero pass detection)
@@ -339,7 +339,7 @@ void stopTriacRun()
 	cli();
 	immediateStopTriacTriggerDelay();
 	sei();
-	stopAmpsADC();
+//	stopAmpsADC();
 }
 
 int16_t ampsADCValue()

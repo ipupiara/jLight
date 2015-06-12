@@ -49,12 +49,12 @@ void stepInterpolation()
 	}
 	
 	if (currentRecMode == play) {
-		retrieveStoredValue();
-		if(currentPos > currentMinuteBuffer.data.amtEntries) {
+		if(currentPos >= currentMinuteBuffer.data.amtEntries) {
 			resetInterpolation();
 		} else {
 			++ currentPos;	
 		}
+		retrieveStoredValue();
 	} else if(currentRecMode == rec)  {
 		if (currentPos <   maxDataAmt - endGapSize ) {   // tobe reviewed  ??
 			getAndKeepCurrentValue();
@@ -89,5 +89,6 @@ void setEndGap()
 			++currentPos;
 		}
 		pCurrentMinuteBuffer->data.buffer[currentPos] = pCurrentMinuteBuffer->data.buffer[0];
+		++ currentPos;
 	}
 }

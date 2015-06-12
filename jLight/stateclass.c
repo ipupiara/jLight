@@ -6,6 +6,9 @@
 
 #include "TStatechart.h"
 #include "StateClass.h"
+#include "TriacDefines.h"
+#include "TriacIntr.h"
+#include "triacInterpolation.h"
 
 
 extern const uStInt uStIntHandlingDone;
@@ -60,7 +63,7 @@ uStInt evTriacOperatingChecker(void)
 
 void entryStartupState(void)
 {
-	printf("entry AskForCalibration\n");
+	printf("entry startup state\n");
 //	displayCalibrationPrompt();
 	startDurationTimer(6);
 
@@ -69,9 +72,9 @@ void entryStartupState(void)
 
 void exitStartupState(void)
 {
-/*	printf("exit ask calib\n");
+	printf("exit ask calib\n");
 	stopDurationTimer();
-	clr_scr(); */
+	//	clr_scr(); 
 }
 
 uStInt evStartupChecker(void)
@@ -81,10 +84,10 @@ uStInt evStartupChecker(void)
 
 	if (currentEvent->evType == evTimeOutDurationTimer) 
 	{	
-//			BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStateTriacIdle);
+			BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStateTriacRunning);
 				// No event action.
-//			END_EVENT_HANDLER(PJoesTriacStateChart);
-//			res =  uStIntHandlingDone;
+			END_EVENT_HANDLER(PJoesTriacStateChart);
+			res =  uStIntHandlingDone;
 	}
 /*	if ((currentEvent->evType == evAstPressed) || (currentEvent->evType == evStartPressed))
 	{	
@@ -112,9 +115,10 @@ uStInt evStartupChecker(void)
 
 void entryTriacRunningState(void)
 {
-	//	printf("entry FatalError\n");
-	//	printf("**************fatal Error: %s *************************\n",lastFatalErrorString);
-	//	displayFatalError();
+		printf("entry eStateTriacRunning\n");
+	resetInterpolation();
+	setRecMode(play);
+	startTriacRun();
 }
 
 void exitTriacRunningState(void)
@@ -126,7 +130,21 @@ uStInt evTriacRunningChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State evStateIdle\n");
-
+	
+	if (currentEvent->evType == evSec10Tick)
+	{
+		stepInterpolation();
+//		displayCountDown();
+		res =  uStIntHandlingDone;
+		//		debugEvent1Triggered = 1;
+	}
+	if (currentEvent->evType == evProgrammingSwitchOn)
+	{
+		BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStatePrepareForRec);
+		// No event action.
+		END_EVENT_HANDLER(PJoesTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 	return (res);
 }
 
@@ -135,17 +153,20 @@ uStInt evTriacRunningChecker(void)
 void entryProgramingState(void)
 {
 	//	printf("entry Programing\n");
+	startAmpsADC();
 }
 
 void exitProgramingState(void)
 {
 	//	printf("exit Programing\n");
+	stopAmpsADC();
 }
 
 uStInt evProgramingChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State Programing\n");
+
 
 	return (res);
 }
@@ -165,6 +186,14 @@ uStInt evPrepareForRecChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State PrepareForRec\n");
+	
+	if (currentEvent->evType == evAdcTick)
+	{
+		setTriacDelayByADC();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+		//		debugEvent1Triggered = 1;
+	}
 
 	return (res);
 }

@@ -77,8 +77,91 @@ int main(void)
 					printf("\nmain() ky %c %X",ky,ky);
 			}
 		}
-	}   
+*/	
+	while (1)
+	{
+//		checkDebugBuffer();
+
+		if (fatalErrorOccurred) {     // do this with highest priority (at the beginning)
+//			fatalErrorOccurred = 0;	  // once occurred state stays until restart/reset
+			ev.evType = evFatalError;
+			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		}
+/*		if (twiDataReceived ==  1) {
+			twiDataReceived = 0;
+			ev.evType = evTWIDataReceived;
+			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		}
+		if (twiDataSent ==  1) {
+			twiDataSent = 0;
+		}
 */
+		if (adcTick){
+			adcTick = 0; // 8-bit access is atomic
+			ev.evType = evAdcTick;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);	
+		}
+		if (runningSecondsTick){
+	//		cli();    // 8-bit access is already atomic
+			runningSecondsTick = 0;
+	//		sei();
+			ev.evType = evSecondsTick;
+			processTriacEvent(&SJLightTriacStateChart,&ev);	
+		}
+
+		if (durationTimerReachead) {
+	//		cli();   // 8-bit access is alread atomic
+			durationTimerReachead = 0;
+	//		sei();
+			ev.evType = evTimeOutDurationTimer;
+			processTriacEvent(&SJLightTriacStateChart,&ev);	
+		}
+
+		if (sec10Tick) {
+			//		cli();   // 8-bit access is alread atomic
+			sec10Tick = 0;
+			//		sei();
+			ev.evType = evSec10Tick;
+			processTriacEvent(&SJLightTriacStateChart,&ev);
+		}
+
+
+	/*	if ((ky = keyEntered())){
+			printf("ky %c %X\n",ky,ky);
+			if (ky == kpF1) ev.evType = evF1Pressed;
+			if (ky == kpF2) ev.evType = evF2Pressed;   
+			if (ky == kpStart) ev.evType = evStartPressed;
+			if (ky == kpStop) ev.evType = evStopPressed;
+			if (ky == kpAst) ev.evType = evAstPressed;
+			if (ky == kpNum) ev.evType = evNumPressed;
+			if (ky >= kp0){
+				ev.evType = evCharEntered;
+				ev.evData.keyCode = ky;			
+			}
+//			printf("ev fired key : %x, startEv:%i, stopEv:%i\n",ky,(ev.evType==evStartPressed),(ev.evType==evStopPressed));	
+			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		}
+		if (stableZeroAdjReached) {
+			stableZeroAdjReached = 0;
+			ev.evType = evZeroSignalOK;
+			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		}
+	
+*/
+/* 		
+	if (debugEvent1Triggered) {
+			debugEvent1Triggered = 0;
+//			ev.evType = evStartPressed;
+//			processTriacEvent(&SJoesTriacStateChart,&ev);
+			ev.evType = evAstPressed;
+			processTriacEvent(&SJoesTriacStateChart,&ev);
+		}  
+		*/
+    }*/
+
+
+
+
 
 
 /*	 ev.evType = evAstPressed;
