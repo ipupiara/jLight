@@ -70,6 +70,9 @@ void restorePersistentData();
 	int8_t syncStoreMinuteBuffer(pMinuteBuffer pMinB);
 	
 	int8_t syncRestoreMinuteBuffer(pMinuteBuffer pMinB);
+	
+	minuteBuffer currentMinuteBuffer;
+	pMinuteBuffer pCurrentMinuteBuffer;
 
 
 #endif

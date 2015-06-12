@@ -55,7 +55,7 @@ static int uart_putchar(char c, FILE *stream)
 
 int main(void)
 {
-	
+	CJLightEvent ev;
 	
 //	USART_Init( 143 );   // baud 4800 at 11.0592 mhz, single uart speed
 //	USART_Init( 71 );   // baud 9600 at 11.0592 mhz, single uart speed
@@ -85,7 +85,7 @@ int main(void)
 		if (fatalErrorOccurred) {     // do this with highest priority (at the beginning)
 //			fatalErrorOccurred = 0;	  // once occurred state stays until restart/reset
 			ev.evType = evFatalError;
-			processTriacEvent(&SJoesTriacStateChart,&ev);	
+			processTriacEvent(&SJLightTriacStateChart,&ev);	
 		}
 /*		if (twiDataReceived ==  1) {
 			twiDataReceived = 0;
@@ -156,19 +156,13 @@ int main(void)
 			ev.evType = evAstPressed;
 			processTriacEvent(&SJoesTriacStateChart,&ev);
 		}  
-		*/
+		
     }*/
 
 
 
+	}
 
 
 
-/*	 ev.evType = evAstPressed;
-	processTriacEvent(&SJoesTriacStateChart,&ev);  */
-
-    while(1)
-    {
-        //TODO:: Please write your application code 
-    }
 }

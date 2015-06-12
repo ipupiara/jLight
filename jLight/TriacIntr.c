@@ -398,12 +398,10 @@ void startDurationTimer(int16_t secs)
 void stopDurationTimer()
 {
 	TCCR1B = 0b00001000 ;  // CTC, timer stopped
-	TIMSK1 = 0x00;void setTriacDelayByADC()
-{
-	
+	TIMSK1 = 0x00;
 }
 	
-}
+
 
 void setCompletionAlarmOff()
 {
@@ -417,7 +415,7 @@ void setCompletionAlarmOn()
 
 void toggleCompletionAlarm()
 {  
-	if (PORTD & 0x08) {
+	if (PORTD && 0x08) {
 		setCompletionAlarmOff();
 	} else {
 		setCompletionAlarmOn();

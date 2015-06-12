@@ -84,23 +84,23 @@ uStInt evStartupChecker(void)
 
 	if (currentEvent->evType == evTimeOutDurationTimer) 
 	{	
-			BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStateTriacRunning);
+			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
 				// No event action.
-			END_EVENT_HANDLER(PJoesTriacStateChart);
+			END_EVENT_HANDLER(PJLightTriacStateChart);
 			res =  uStIntHandlingDone;
 	}
 /*	if ((currentEvent->evType == evAstPressed) || (currentEvent->evType == evStartPressed))
 	{	
-			BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStateCalibrating);
+			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateCalibrating);
 				// No event action.
-			END_EVENT_HANDLER(PJoesTriacStateChart);
+			END_EVENT_HANDLER(PJLightTriacStateChart);
 			res =  uStIntHandlingDone;
 	}
 	if (currentEvent->evType == evF1Pressed) 
 	{	
-			BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStateChangeCalibVars);
+			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateChangeCalibVars);
 				// No event action.
-			END_EVENT_HANDLER(PJoesTriacStateChart);
+			END_EVENT_HANDLER(PJLightTriacStateChart);
 			res =  uStIntHandlingDone;
 	}
 	if (currentEvent->evType == evSecondsTick) 
@@ -140,9 +140,9 @@ uStInt evTriacRunningChecker(void)
 	}
 	if (currentEvent->evType == evProgrammingSwitchOn)
 	{
-		BEGIN_EVENT_HANDLER(PJoesTriacStateChart, eStatePrepareForRec);
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
 		// No event action.
-		END_EVENT_HANDLER(PJoesTriacStateChart);
+		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
 	}
 	return (res);
@@ -194,7 +194,13 @@ uStInt evPrepareForRecChecker(void)
 		res =  uStIntHandlingDone;
 		//		debugEvent1Triggered = 1;
 	}
-
+	if (currentEvent->evType == evRecordButtonOn)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecord);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 	return (res);
 }
 
@@ -202,30 +208,48 @@ uStInt evPrepareForRecChecker(void)
 void entryRecordState(void)
 {
 	//	printf("entry Record\n");
+	clearBuffer();
+	setRecMode(rec);
 }
 
 void exitRecordState(void)
 {
 	//	printf("exit Record\n");
+	setRecMode(play);
 }
 
 uStInt evRecordChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State Record\n");
-
+	
+	if (currentEvent->evType == evAdcTick)
+	{
+		setTriacDelayByADC();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+		//		debugEvent1Triggered = 1;
+	}
+	if (currentEvent->evType == evSec10Tick)
+	{
+		stepInterpolation();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+		//		debugEvent1Triggered = 1;
+	}
 	return (res);
 }
 
 
 void entryRecInTimeState(void)
 {
-	//	printf("entry RecInTime\n");
+	startDurationTimer(40);
 }
 
 void exitRecInTimeState(void)
 {
 	//	printf("exit RecInTime\n");
+	stopDurationTimer();
 }
 
 uStInt evRecInTimeChecker(void)

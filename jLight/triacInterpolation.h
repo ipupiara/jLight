@@ -27,8 +27,7 @@ uint8_t currentRecMode;
 uint16_t currentSec;
 uint8_t currentSec10;
 uint16_t currentPos;
-minuteBuffer currentMinuteBuffer;
-pMinuteBuffer pCurrentMinuteBuffer;
+
 
 
 //void calcInterpolation();
@@ -40,5 +39,7 @@ void resetInterpolation();
 void stepInterpolation();
 
 void setTriacDelayByADC();
+
+void clearBuffer();
 
 #endif /* TRIACINTERPOLATION_H_ */

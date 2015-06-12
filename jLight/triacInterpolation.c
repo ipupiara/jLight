@@ -92,3 +92,8 @@ void setEndGap()
 		++ currentPos;
 	}
 }
+
+void clearBuffer()
+{
+	memset(pCurrentMinuteBuffer,0,sizeof(currentMinuteBuffer));
+}
