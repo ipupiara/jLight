@@ -5,6 +5,7 @@
  *  Author: ixchel
  */ 
 
+#include "string.h"
 #include "triacInterpolation.h"
 #include "TriacIntr.h"
 
@@ -35,6 +36,7 @@ void resetInterpolation()
 	currentSec = 0;
 	currentSec10 = 0;
 	currentPos = 0;
+	timeoutRecord = 0;
 }
 
 void stepInterpolation()
@@ -60,6 +62,7 @@ void stepInterpolation()
 			getAndKeepCurrentValue();
 			++ currentPos;
 		}   else {
+			timeoutRecord = 1;
 			setEndGap();
 		}
 	}

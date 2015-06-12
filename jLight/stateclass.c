@@ -34,6 +34,7 @@ enum eStates
 	eStateRecTimeLow,
 	eStateRecTimeCritical,
 	eStateRecTimeOut,  
+	eStateTesting,
 	eStateFatalError,   
 	eNumberOfStates
 };
@@ -166,7 +167,24 @@ uStInt evProgramingChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State Programing\n");
-
+	
+	if (currentEvent->evType == evProgrammingSwitchOff)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+	if (currentEvent->evType == evStoreButtonPressed)
+	{
+//		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
+		// No event action.
+		
+		syncStoreMinuteBuffer(pCurrentMinuteBuffer);
+		
+//		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 
 	return (res);
 }
@@ -197,6 +215,13 @@ uStInt evPrepareForRecChecker(void)
 	if (currentEvent->evType == evRecordButtonOn)
 	{
 		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecord);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+	if (currentEvent->evType == evTestButtonOn)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTesting);
 		// No event action.
 		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
@@ -237,6 +262,24 @@ uStInt evRecordChecker(void)
 		res =  uStIntHandlingDone;
 		//		debugEvent1Triggered = 1;
 	}
+	
+	if (currentEvent->evType == evRecordButtonOff)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+		
+	if (currentEvent->evType == evTimeoutRecord)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeOut);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+
+
 	return (res);
 }
 
@@ -256,6 +299,14 @@ uStInt evRecInTimeChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State RecInTime\n");
+	
+	if (currentEvent->evType == evTimeOutDurationTimer)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeLow);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 
 	return (res);
 }
@@ -264,17 +315,28 @@ uStInt evRecInTimeChecker(void)
 void entryRecTimeLowState(void)
 {
 	//	printf("entry RecTimeLow\n");
+	startDurationTimer(10);
 }
 
 void exitRecTimeLowState(void)
 {
 	//	printf("exit RecTimeLow\n");
+	stopDurationTimer();
 }
 
 uStInt evRecTimeLowChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State RecTimeLow\n");
+	
+	if (currentEvent->evType == evTimeOutDurationTimer)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeCritical);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+
 
 	return (res);
 }
@@ -294,6 +356,14 @@ uStInt evRecTimeCriticalChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State RecTimeCritical\n");
+		if (currentEvent->evType == evTimeOutDurationTimer)
+		{
+			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeLow);
+			// No event action.
+			END_EVENT_HANDLER(PJLightTriacStateChart);
+			res =  uStIntHandlingDone;
+		}
+
 
 	return (res);
 }
@@ -302,18 +372,67 @@ uStInt evRecTimeCriticalChecker(void)
 void entryRecTimeOutState(void)
 {
 	//	printf("entry RecTimeOut\n");
+	startDurationTimer(4);
+	setCompletionAlarmOn();
 }
 
 void exitRecTimeOutState(void)
 {
 	//	printf("exit RecTimeOut\n");
+	stopDurationTimer();
+	setCompletionAlarmOff();
 }
 
 uStInt evRecTimeOutChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State RecTimeOut\n");
+	
+	if (currentEvent->evType == evTimeOutDurationTimer)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 
+	return (res);
+}
+
+
+void entryTestingState(void)
+{
+	//	printf("entry Testing\n");
+	resetInterpolation();
+	setRecMode(play);
+}
+
+void exitTestingState(void)
+{
+	//	printf("exit Testing\n");
+}
+
+uStInt evTestingChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State Testing\n");
+	
+	if (currentEvent->evType == evTestButtonOff)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+
+	if (currentEvent->evType == evSec10Tick)
+	{
+		stepInterpolation();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+		//		debugEvent1Triggered = 1;
+	}
+	
 	return (res);
 }
 
@@ -453,7 +572,7 @@ xStateType xaStates[eNumberOfStates] = {
 	},
 	 
 	{eStateRecTimeOut,
-		eStateRecord ,
+		eStatePrograming ,
 		-1,
 		0,
 		evRecTimeOutChecker,
@@ -461,6 +580,18 @@ xStateType xaStates[eNumberOfStates] = {
 		entryRecTimeOutState,
 		exitRecTimeOutState
 	},
+	
+	{eStateTesting,
+		eStatePrograming ,
+		-1,
+		0,
+		evTestingChecker,
+		tfNull,
+		entryTestingState,
+		exitTestingState
+	},
+		
+
 	 
 	{eStateFatalError,
  		eStateJLightTriac,

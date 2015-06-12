@@ -28,6 +28,7 @@ uint16_t currentSec;
 uint8_t currentSec10;
 uint16_t currentPos;
 
+uint8_t timeoutRecord;
 
 
 //void calcInterpolation();

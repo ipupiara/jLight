@@ -14,6 +14,7 @@
 
 #include "StateClass.h"
 #include "TriacIntr.h"
+#include "triacInterpolation.h"
 
 
 
@@ -96,6 +97,14 @@ int main(void)
 			twiDataSent = 0;
 		}
 */
+
+		if (timeoutRecord){
+			timeoutRecord = 0; // 8-bit access is atomic
+			ev.evType = evTimeoutRecord;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
+
+
 		if (adcTick){
 			adcTick = 0; // 8-bit access is atomic
 			ev.evType = evAdcTick;

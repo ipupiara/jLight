@@ -22,6 +22,7 @@ enum eEventTypes
 	evTestButtonOn,
 	evTestButtonOff,
 	evStoreButtonPressed,
+	evTimeoutRecord,
 	evFatalError
 };
 
