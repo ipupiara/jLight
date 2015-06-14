@@ -66,7 +66,7 @@ void entryStartupState(void)
 {
 	printf("entry startup state\n");
 //	displayCalibrationPrompt();
-	startDurationTimer(6);
+	startDurationTimer(3);
 
 //	startDurationTimer(maxSecsPossible);
 }
@@ -125,6 +125,7 @@ void entryTriacRunningState(void)
 void exitTriacRunningState(void)
 {
 	//	printf("exit FatalErro\n");
+	stopTriacRun();
 }
 
 uStInt evTriacRunningChecker(void)
@@ -235,6 +236,7 @@ void entryRecordState(void)
 	//	printf("entry Record\n");
 	clearBuffer();
 	setRecMode(rec);
+	resetInterpolation();
 }
 
 void exitRecordState(void)
@@ -322,6 +324,7 @@ void exitRecTimeLowState(void)
 {
 	//	printf("exit RecTimeLow\n");
 	stopDurationTimer();
+	setCompletionAlarmOff();
 }
 
 uStInt evRecTimeLowChecker(void)
@@ -337,10 +340,18 @@ uStInt evRecTimeLowChecker(void)
 		res =  uStIntHandlingDone;
 	}
 
+	if (currentEvent->evType == evSec10Tick)
+	{
+		if ( (sec10Cnt < 2) ) {
+			setCompletionAlarmOn();
+		} else {
+			setCompletionAlarmOff();
+		}
+//		res =  uStIntHandlingDone;              parent state needs the event too
 
+	}
 	return (res);
 }
-
 
 void entryRecTimeCriticalState(void)
 {
@@ -356,15 +367,23 @@ uStInt evRecTimeCriticalChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State RecTimeCritical\n");
-		if (currentEvent->evType == evTimeOutDurationTimer)
+/*		if (currentEvent->evType == evTimeOutDurationTimer)
 		{
 			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeLow);
 			// No event action.
 			END_EVENT_HANDLER(PJLightTriacStateChart);
 			res =  uStIntHandlingDone;
+		}  */
+
+	if (currentEvent->evType == evSec10Tick)
+	{
+		if ( sec10Cnt < 6   ) {
+			setCompletionAlarmOn();
+		} else {
+			setCompletionAlarmOff();
 		}
-
-
+		//		res =  uStIntHandlingDone;              parent state needs the event too
+	}
 	return (res);
 }
 
@@ -372,7 +391,7 @@ uStInt evRecTimeCriticalChecker(void)
 void entryRecTimeOutState(void)
 {
 	//	printf("entry RecTimeOut\n");
-	startDurationTimer(4);
+	startDurationTimer(5);
 	setCompletionAlarmOn();
 }
 
@@ -437,7 +456,6 @@ uStInt evTestingChecker(void)
 }
 
 
-
 void entryFatalErrorState(void)
 {
 //	printf("entry FatalError\n");
@@ -457,8 +475,6 @@ uStInt evFatalErrorChecker(void)
 
 	return (res);
 }
-
-
 
 #ifndef  sdccNULL 
 
@@ -591,8 +607,6 @@ xStateType xaStates[eNumberOfStates] = {
 		exitTestingState
 	},
 		
-
-	 
 	{eStateFatalError,
  		eStateJLightTriac,
  		-1,

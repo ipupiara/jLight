@@ -190,6 +190,13 @@ ISR(INT0_vect)
 			if (int0StartCnt >= 50) {
 				int0StartCnt = 0;
 			}
+			++sec10Cnt;
+			if (sec10Cnt > 9) {
+				sec10Cnt = 0;
+			}
+			if(buttonSec10Dist >0 ) {
+				--buttonSec10Dist;
+			}
 		}
 	}
 	sei();		  
@@ -215,8 +222,8 @@ void initInterrupts()
 {
 // Ext. Interrupt
 
-		DDRA = 0b11110000;    // set pin 7 to 4 of port A as output for digital poti (zero adj)
-		PORTA = 0b11100000;
+//		DDRA = 0b11110000;    // set pin 7 to 4 of port A as output for digital poti (zero adj)
+//		PORTA = 0b11100000;
 		DIDR0 = 0x0F;			// disa digital input on a0..a3
 
 		DDRD &= ~0x04;		// set PortD pin 2 as input for trigger Ext Int 0
@@ -289,6 +296,10 @@ void initInterrupts()
 		adcTick = 0;
 		adcCnt = 0;
 		lastAmpsADCVal = 0;
+		
+		sec10Cnt = 0;
+		sec10Tick = 0;
+		buttonSec10Dist = 0;
 
 		sei();  // start interrupts if not yet started
 		

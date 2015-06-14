@@ -14,6 +14,8 @@ int8_t runningSecondsTick;
 
 int8_t adcTick;
 int8_t sec10Tick;
+uint8_t sec10Cnt;
+uint8_t buttonSec10Dist;
 void startAmpsADC();
 void stopAmpsADC();
 //void setDiffADC();

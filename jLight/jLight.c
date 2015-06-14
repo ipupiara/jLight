@@ -15,7 +15,7 @@
 #include "StateClass.h"
 #include "TriacIntr.h"
 #include "triacInterpolation.h"
-
+#include "buttons.h"
 
 
 void USART_Init( unsigned int baud )
@@ -64,21 +64,12 @@ int main(void)
 	stdout = &mystdout;
 	printf("\nSTARTUP\n");
 	restorePersistentData();
-
+	initButtons();
 	initInterrupts();
 
 	startStateCharts();	
 
-/*	int dummyI;
-	dummyI = 0;
-	while(1) {
-		++ dummyI;
-		if (dummyI == 0) {
-			if ((ky = keyEntered())){
-					printf("\nmain() ky %c %X",ky,ky);
-			}
-		}
-*/	
+
 	while (1)
 	{
 //		checkDebugBuffer();
@@ -111,17 +102,13 @@ int main(void)
 			processTriacEvent(&SJLightTriacStateChart  ,&ev);	
 		}
 		if (runningSecondsTick){
-	//		cli();    // 8-bit access is already atomic
 			runningSecondsTick = 0;
-	//		sei();
 			ev.evType = evSecondsTick;
 			processTriacEvent(&SJLightTriacStateChart,&ev);	
 		}
 
 		if (durationTimerReachead) {
-	//		cli();   // 8-bit access is alread atomic
 			durationTimerReachead = 0;
-	//		sei();
 			ev.evType = evTimeOutDurationTimer;
 			processTriacEvent(&SJLightTriacStateChart,&ev);	
 		}
@@ -135,39 +122,41 @@ int main(void)
 		}
 
 
-	/*	if ((ky = keyEntered())){
-			printf("ky %c %X\n",ky,ky);
-			if (ky == kpF1) ev.evType = evF1Pressed;
-			if (ky == kpF2) ev.evType = evF2Pressed;   
-			if (ky == kpStart) ev.evType = evStartPressed;
-			if (ky == kpStop) ev.evType = evStopPressed;
-			if (ky == kpAst) ev.evType = evAstPressed;
-			if (ky == kpNum) ev.evType = evNumPressed;
-			if (ky >= kp0){
-				ev.evType = evCharEntered;
-				ev.evData.keyCode = ky;			
-			}
-//			printf("ev fired key : %x, startEv:%i, stopEv:%i\n",ky,(ev.evType==evStartPressed),(ev.evType==evStopPressed));	
-			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		if (programmingSwitchOn){
+			programmingSwitchOn = 0; // 8-bit access is atomic
+			ev.evType = evProgrammingSwitchOn;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
 		}
-		if (stableZeroAdjReached) {
-			stableZeroAdjReached = 0;
-			ev.evType = evZeroSignalOK;
-			processTriacEvent(&SJoesTriacStateChart,&ev);	
+		if (programmingSwitchOff){
+			programmingSwitchOff = 0; // 8-bit access is atomic
+			ev.evType = evProgrammingSwitchOff;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
 		}
-	
-*/
-/* 		
-	if (debugEvent1Triggered) {
-			debugEvent1Triggered = 0;
-//			ev.evType = evStartPressed;
-//			processTriacEvent(&SJoesTriacStateChart,&ev);
-			ev.evType = evAstPressed;
-			processTriacEvent(&SJoesTriacStateChart,&ev);
-		}  
-		
-    }*/
-
+		if (recordButtonOn){
+			recordButtonOn = 0; // 8-bit access is atomic
+			ev.evType = evRecordButtonOn;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
+		if (recordButtonOff){
+			recordButtonOff = 0; // 8-bit access is atomic
+			ev.evType = evRecordButtonOff;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
+		if (testButtonOn){
+			testButtonOn = 0; // 8-bit access is atomic
+			ev.evType = evTestButtonOn;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
+		if (testButtonOff){
+			testButtonOff = 0; // 8-bit access is atomic
+			ev.evType = evTestButtonOff;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
+		if (storeButtonPressed){
+			storeButtonPressed = 0; // 8-bit access is atomic
+			ev.evType = evStoreButtonPressed;
+			processTriacEvent(&SJLightTriacStateChart  ,&ev);
+		}
 
 
 	}
