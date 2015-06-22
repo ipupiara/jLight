@@ -219,6 +219,7 @@ void restorePersistentData()
 	ampsInputPin = eeprom_read_byte((uint8_t*)ampsInputPinEEPROMpos);	
 	if ( (ampsInputPin < 0x00) || (ampsInputPin > 0x01)) { storeAmpsInputPin(0x00);}   
 */
+	pCurrentMinuteBuffer = &currentMinuteBuffer;
 	eepromAccessErrorOcurred = 0;
     fatalErrorOccurred = 0;
 	syncRestoreMinuteBuffer(pCurrentMinuteBuffer);
@@ -239,10 +240,15 @@ int8_t syncRestoreMinuteBuffer(pMinuteBuffer pMinB)
 {
 	int8_t res = 0;
 	uint16_t cnt;
+	uint16_t toValue;
+	uint8_t val;
 	
-	for (cnt = 0; cnt < sizeof(minuteBuffer); ++ cnt)  {
-		
-		pMinB->dataBytes[cnt] =  eeprom_read_byte( (uint16_t*) cnt);   
+	
+	toValue = sizeof(minuteBuffer);
+	
+	for (cnt = 0; cnt < toValue ; ++ cnt)  {
+		val = eeprom_read_byte( (uint16_t*) cnt); 
+		pMinB->dataBytes[cnt] =  val;   
 	}		
 	return res;
 }

@@ -27,15 +27,42 @@ enum { on,off
 void initButtons()
 {
 	DDRA &= 0x0F;              //  PA4..PA7 as input
+	PORTA = 0x70;         // set pullups on  on 3 of the buttons
 	PCICR |= (1<<PCIE0);		// PA interrupt enable
 	PCMSK0 |= (1<<PCINT7) | (1<< PCINT6) | (1<<PCINT5) |(1<<PCINT4) ;   // on PA4 .. PA7
-	prevPinA = PINA;
-} 
+	prevPinA = PINA;  
+}	
 
+enum {
+		programing = 1,
+		record,
+		test,
+		store,
+	};
+
+typedef struct   {
+	int16_t port;
+	int8_t  pin;
+	} PortAdrRec;
+	
+
+PortAdrRec portAdrs  [store]	=  {{0x24,  PORTD0 }, {0x24, PORTD1 },{0x24, PORTD2 },{0x24, PORTD3 }};
+
+
+void setLight(PortAdrRec rAdr, int8_t direction)
+{
+	int16_t**  pPtr;
+	pPtr = (int16_t **) rAdr.port;
+	if (direction == on)  {
+		**pPtr |=  (1 << rAdr.pin) ;
+	} else {
+		**pPtr &=  ~(1 << rAdr.pin) ;
+	}
+}
 
 void setProgramingLight(int8_t toState)
 {
-	
+		
 }
 
 void setRecordLight(int8_t toState)
@@ -59,12 +86,11 @@ ISR(PCINT0_vect )
 	if (buttonSec10Dist == 0)  {
 		if ((prevPinA & (1<< PINA4) ) != (PINA & (1<<PINA4)  ) )	{
 			if (PINA & (1<<PINA4)  ) {
-				programmingSwitchOn = 1;
-				setProgramingLight(on);
+				storeButtonPressed = 1;
+				setStoreLight(on);
 			}  else  {
-				programmingSwitchOff = 1;
-				setProgramingLight(off);
-			}
+				setStoreLight(off);
+			}						
 		}
 		if ((prevPinA & (1<< PINA5) ) != (PINA & (1<<PINA5)  ) )	{
 			if (PINA & (1<<PINA5)  ) {
@@ -86,11 +112,11 @@ ISR(PCINT0_vect )
 		}
 		if ((prevPinA & (1<< PINA7) ) != (PINA & (1<<PINA7)  ) )	{
 			if (PINA & (1<<PINA7)  ) {
-					storeButtonPressed = 1;
-					setStoreLight(on);
-				}  else  {
-					setStoreLight(off);
-		
+				programmingSwitchOn = 1;
+				setLight(portAdrs [programing]  ,on);
+			}  else  {
+				programmingSwitchOff = 1;
+				setLight(portAdrs [programing]  ,off);
 			}
 		} 
 	}
