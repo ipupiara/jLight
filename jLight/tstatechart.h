@@ -15,7 +15,7 @@
 //
 //		you need not understand this code, actually implementing a fsm is much simple
 //
-//     PN. changed classes into structs and removed Tamplate in order to let run on 8051 cpu.
+//     PN. changed classes into structs and removed Tëmplate in order to let run on 8051 cpu.
 //     unint23 -> uint8 etc.
 //
 //

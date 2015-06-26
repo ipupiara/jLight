@@ -19,10 +19,6 @@
 uint8_t prevPinA;
 
 
-enum { on,off
-	
-	} lightState;
-
 
 void initButtons()
 {
@@ -45,8 +41,9 @@ typedef struct   {
 	int8_t  pin;
 	} PortAdrRec;
 	
+#define portD	0x24
 
-PortAdrRec portAdrs  [store]	=  {{0x24,  PORTD0 }, {0x24, PORTD1 },{0x24, PORTD2 },{0x24, PORTD3 }};
+PortAdrRec portAdrs  [store]	=  {{portD,  PORTD0 }, {portD, PORTD1 },{portD, PORTD2 },{portD, PORTD3 }};
 
 
 void setLight(PortAdrRec rAdr, int8_t direction)
@@ -60,26 +57,27 @@ void setLight(PortAdrRec rAdr, int8_t direction)
 	}
 }
 
-void setProgramingLight(int8_t toState)
-{
-		
-}
+
 
 void setRecordLight(int8_t toState)
 {
-	
+	setLight(portAdrs [record]  ,off);
 }
 
 void setTestLight(int8_t toState)
 {
-	
+	setLight(portAdrs [test]  ,off);
 }
 
 void setStoreLight(int8_t toState)
 {
-	
+	setLight(portAdrs [store]  ,off);
 }
 
+void setProgramingLight(int8_t toState)
+{
+	setLight(portAdrs [programing]  ,off);
+}
 
 ISR(PCINT0_vect )
 {
@@ -87,36 +85,28 @@ ISR(PCINT0_vect )
 		if ((prevPinA & (1<< PINA4) ) != (PINA & (1<<PINA4)  ) )	{
 			if (PINA & (1<<PINA4)  ) {
 				storeButtonPressed = 1;
-				setStoreLight(on);
 			}  else  {
-				setStoreLight(off);
 			}						
 		}
 		if ((prevPinA & (1<< PINA5) ) != (PINA & (1<<PINA5)  ) )	{
 			if (PINA & (1<<PINA5)  ) {
 					recordButtonOn = 1;
-					setRecordLight(on);
 				}  else  {
 					recordButtonOff = 1;
-					setRecordLight(off);
 			}
 		}
 		if ((prevPinA & (1<< PINA6) ) != (PINA & (1<<PINA6)  ) )	{
 			if (PINA & (1<<PINA6)  ) {
 					testButtonOn = 1;
-					setTestLight(on);
 				}  else  {
 					testButtonOff = 1;
-					setTestLight(off);
 			}
 		}
 		if ((prevPinA & (1<< PINA7) ) != (PINA & (1<<PINA7)  ) )	{
 			if (PINA & (1<<PINA7)  ) {
 				programmingSwitchOn = 1;
-				setLight(portAdrs [programing]  ,on);
 			}  else  {
 				programmingSwitchOff = 1;
-				setLight(portAdrs [programing]  ,off);
 			}
 		} 
 	}

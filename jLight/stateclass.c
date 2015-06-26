@@ -9,6 +9,7 @@
 #include "TriacDefines.h"
 #include "TriacIntr.h"
 #include "triacInterpolation.h"
+#include "buttons.h"
 
 
 extern const uStInt uStIntHandlingDone;
@@ -155,12 +156,14 @@ uStInt evTriacRunningChecker(void)
 void entryProgramingState(void)
 {
 	//	printf("entry Programing\n");
+	setProgramingLight(on);
 	startAmpsADC();
 }
 
 void exitProgramingState(void)
 {
 	//	printf("exit Programing\n");
+	setProgramingLight(off);
 	stopAmpsADC();
 }
 
@@ -181,7 +184,9 @@ uStInt evProgramingChecker(void)
 //		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
 		// No event action.
 		
+		setStoreLight(on);
 		syncStoreMinuteBuffer(pCurrentMinuteBuffer);
+		setStoreLight(off);
 		
 //		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
@@ -237,12 +242,14 @@ void entryRecordState(void)
 	clearBuffer();
 	setRecMode(rec);
 	resetInterpolation();
+	setRecordLight(on);
 }
 
 void exitRecordState(void)
 {
 	//	printf("exit Record\n");
 	setRecMode(play);
+	setRecordLight(off);
 }
 
 uStInt evRecordChecker(void)
@@ -424,11 +431,13 @@ void entryTestingState(void)
 	//	printf("entry Testing\n");
 	resetInterpolation();
 	setRecMode(play);
+	setTestLight(on);
 }
 
 void exitTestingState(void)
 {
 	//	printf("exit Testing\n");
+	setTestLight(off);
 }
 
 uStInt evTestingChecker(void)
