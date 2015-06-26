@@ -22,18 +22,21 @@ uint8_t prevPinA;
 
 void initButtons()
 {
-	DDRA &= 0x0F;              //  PA4..PA7 as input
-	PORTA = 0x70;         // set pullups on  on 3 of the buttons
+	DDRA &= 0x0F;              //  PA4..PA7 as input 
+	PORTA = 0x70;         // set pullups on  on 3 of the buttons, rest to 0
 	PCICR |= (1<<PCIE0);		// PA interrupt enable
 	PCMSK0 |= (1<<PCINT7) | (1<< PCINT6) | (1<<PCINT5) |(1<<PCINT4) ;   // on PA4 .. PA7
+	
+	DDRA |= 0x07;     // PA1 .. PA3   as output
 	prevPinA = PINA;  
 }	
 
 enum {
-		programing = 1,
+		programing = 0,
 		record,
 		test,
 		store,
+		numLights
 	};
 
 typedef struct   {
@@ -41,9 +44,10 @@ typedef struct   {
 	int8_t  pin;
 	} PortAdrRec;
 	
-#define portD	0x24
+#define portD	0x2B
+#define portA   0x22
 
-PortAdrRec portAdrs  [store]	=  {{portD,  PORTD0 }, {portD, PORTD1 },{portD, PORTD2 },{portD, PORTD3 }};
+PortAdrRec portAdrs  [numLights]	=  {{portD,  PORTD7 }, {portA, PORTA1 },{portA, PORTA2 },{portA, PORTA3 }};
 
 
 void setLight(PortAdrRec rAdr, int8_t direction)

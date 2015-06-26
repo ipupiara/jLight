@@ -66,7 +66,6 @@ uStInt evTriacOperatingChecker(void)
 void entryStartupState(void)
 {
 	printf("entry startup state\n");
-//	displayCalibrationPrompt();
 	startDurationTimer(3);
 
 //	startDurationTimer(maxSecsPossible);
@@ -74,9 +73,8 @@ void entryStartupState(void)
 
 void exitStartupState(void)
 {
-	printf("exit ask calib\n");
+	printf("exit startup\n");
 	stopDurationTimer();
-	//	clr_scr(); 
 }
 
 uStInt evStartupChecker(void)
@@ -117,7 +115,7 @@ uStInt evStartupChecker(void)
 
 void entryTriacRunningState(void)
 {
-		printf("entry eStateTriacRunning\n");
+	printf("entry eStateTriacRunning\n");
 	resetInterpolation();
 	setRecMode(play);
 	startTriacRun();
@@ -125,7 +123,7 @@ void entryTriacRunningState(void)
 
 void exitTriacRunningState(void)
 {
-	//	printf("exit FatalErro\n");
+	printf("exit triacRunningState\n");
 	stopTriacRun();
 }
 
@@ -155,14 +153,14 @@ uStInt evTriacRunningChecker(void)
 
 void entryProgramingState(void)
 {
-	//	printf("entry Programing\n");
+	printf("entry Programing\n");
 	setProgramingLight(on);
 	startAmpsADC();
 }
 
 void exitProgramingState(void)
 {
-	//	printf("exit Programing\n");
+	printf("exit Programing\n");
 	setProgramingLight(off);
 	stopAmpsADC();
 }
@@ -198,12 +196,12 @@ uStInt evProgramingChecker(void)
 
 void entryPrepareForRecState(void)
 {
-	//	printf("entry PrepareForRec\n");
+	printf("entry PrepareForRec\n");
 }
 
 void exitPrepareForRecState(void)
 {
-	//	printf("exit PrepareForRec\n");
+	printf("exit PrepareForRec\n");
 }
 
 uStInt evPrepareForRecChecker(void)
@@ -238,7 +236,7 @@ uStInt evPrepareForRecChecker(void)
 
 void entryRecordState(void)
 {
-	//	printf("entry Record\n");
+	printf("entry Record\n");
 	clearBuffer();
 	setRecMode(rec);
 	resetInterpolation();
@@ -247,7 +245,7 @@ void entryRecordState(void)
 
 void exitRecordState(void)
 {
-	//	printf("exit Record\n");
+	printf("exit Record\n");
 	setRecMode(play);
 	setRecordLight(off);
 }
@@ -295,12 +293,13 @@ uStInt evRecordChecker(void)
 
 void entryRecInTimeState(void)
 {
+	printf("entry RecInTime\n");
 	startDurationTimer(40);
 }
 
 void exitRecInTimeState(void)
 {
-	//	printf("exit RecInTime\n");
+	printf("exit RecInTime\n");
 	stopDurationTimer();
 }
 
@@ -323,13 +322,13 @@ uStInt evRecInTimeChecker(void)
 
 void entryRecTimeLowState(void)
 {
-	//	printf("entry RecTimeLow\n");
+	printf("entry RecTimeLow\n");
 	startDurationTimer(10);
 }
 
 void exitRecTimeLowState(void)
 {
-	//	printf("exit RecTimeLow\n");
+	printf("exit RecTimeLow\n");
 	stopDurationTimer();
 	setCompletionAlarmOff();
 }
@@ -362,12 +361,12 @@ uStInt evRecTimeLowChecker(void)
 
 void entryRecTimeCriticalState(void)
 {
-	//	printf("entry RecTimeCritical\n");
+	printf("entry RecTimeCritical\n");
 }
 
 void exitRecTimeCriticalState(void)
 {
-	//	printf("exit RecTimeCritical\n");
+	printf("exit RecTimeCritical\n");
 }
 
 uStInt evRecTimeCriticalChecker(void)
@@ -397,14 +396,14 @@ uStInt evRecTimeCriticalChecker(void)
 
 void entryRecTimeOutState(void)
 {
-	//	printf("entry RecTimeOut\n");
+	printf("entry RecTimeOut\n");
 	startDurationTimer(5);
 	setCompletionAlarmOn();
 }
 
 void exitRecTimeOutState(void)
 {
-	//	printf("exit RecTimeOut\n");
+	printf("exit RecTimeOut\n");
 	stopDurationTimer();
 	setCompletionAlarmOff();
 }
@@ -428,7 +427,7 @@ uStInt evRecTimeOutChecker(void)
 
 void entryTestingState(void)
 {
-	//	printf("entry Testing\n");
+	printf("entry Testing\n");
 	resetInterpolation();
 	setRecMode(play);
 	setTestLight(on);
@@ -436,7 +435,7 @@ void entryTestingState(void)
 
 void exitTestingState(void)
 {
-	//	printf("exit Testing\n");
+	printf("exit Testing\n");
 	setTestLight(off);
 }
 
@@ -467,14 +466,13 @@ uStInt evTestingChecker(void)
 
 void entryFatalErrorState(void)
 {
-//	printf("entry FatalError\n");
-//	printf("**************fatal Error: %s *************************\n",lastFatalErrorString);
-//	displayFatalError();
+	printf("entry FatalError\n");
+	printf("**************fatal Error: *************************\n");
 }
 
 void exitFatalErrorState(void)
 {
-//	printf("exit FatalErro\n");
+	printf("exit FatalErro\n");
 }
 
 uStInt evFatalErrorChecker(void)
