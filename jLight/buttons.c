@@ -22,12 +22,13 @@ uint8_t prevPinA;
 
 void initButtons()
 {
-	DDRA &= 0x0F;              //  PA4..PA7 as input 
+	DDRA &= 0x0E;              // PA0, PA4..PA7 as input 
 	PORTA = 0x70;         // set pullups on  on 3 of the buttons, rest to 0
 	PCICR |= (1<<PCIE0);		// PA interrupt enable
 	PCMSK0 |= (1<<PCINT7) | (1<< PCINT6) | (1<<PCINT5) |(1<<PCINT4) ;   // on PA4 .. PA7
 	
-	DDRA |= 0x07;     // PA1 .. PA3   as output
+	DDRA |= 0x0E;     // PA1 .. PA3   as output
+	DDRD |= 0x80;     //  PD7  as output
 	prevPinA = PINA;  
 }	
 
@@ -52,12 +53,13 @@ PortAdrRec portAdrs  [numLights]	=  {{portD,  PORTD7 }, {portA, PORTA1 },{portA,
 
 void setLight(PortAdrRec rAdr, int8_t direction)
 {
-	int16_t**  pPtr;
-	pPtr = (int16_t **) rAdr.port;
+	uint8_t*   vPtr;
+	vPtr  = (uint8_t *) rAdr.port;
+//	*pPtr = (int16_t *) rAdr.port;
 	if (direction == on)  {
-		**pPtr |=  (1 << rAdr.pin) ;
+		*vPtr |=  (1 << rAdr.pin) ;
 	} else {
-		**pPtr &=  ~(1 << rAdr.pin) ;
+		* vPtr &=  ~(1 << rAdr.pin) ;
 	}
 }
 
@@ -65,45 +67,47 @@ void setLight(PortAdrRec rAdr, int8_t direction)
 
 void setRecordLight(int8_t toState)
 {
-	setLight(portAdrs [record]  ,off);
+	setLight(portAdrs [record]  ,toState);
 }
 
 void setTestLight(int8_t toState)
 {
-	setLight(portAdrs [test]  ,off);
+	setLight(portAdrs [test]  ,toState);
 }
 
 void setStoreLight(int8_t toState)
 {
-	setLight(portAdrs [store]  ,off);
+	setLight(portAdrs [store]  ,toState);
 }
 
 void setProgramingLight(int8_t toState)
 {
-	setLight(portAdrs [programing]  ,off);
+	setLight(portAdrs [programing]  ,toState);
 }
 
 ISR(PCINT0_vect )
 {
-	if (buttonSec10Dist == 0)  {
+	cli();
+//	if (buttonSec10Dist == 0)  {
 		if ((prevPinA & (1<< PINA4) ) != (PINA & (1<<PINA4)  ) )	{
 			if (PINA & (1<<PINA4)  ) {
-				storeButtonPressed = 1;
+				storeButtonPressed = 0;
 			}  else  {
+				storeButtonPressed = 1;
 			}						
 		}
 		if ((prevPinA & (1<< PINA5) ) != (PINA & (1<<PINA5)  ) )	{
 			if (PINA & (1<<PINA5)  ) {
-					recordButtonOn = 1;
-				}  else  {
 					recordButtonOff = 1;
+				}  else  {
+					recordButtonOn = 1;
 			}
 		}
 		if ((prevPinA & (1<< PINA6) ) != (PINA & (1<<PINA6)  ) )	{
 			if (PINA & (1<<PINA6)  ) {
-					testButtonOn = 1;
-				}  else  {
 					testButtonOff = 1;
+				}  else  {
+					testButtonOn = 1;
 			}
 		}
 		if ((prevPinA & (1<< PINA7) ) != (PINA & (1<<PINA7)  ) )	{
@@ -113,7 +117,9 @@ ISR(PCINT0_vect )
 				programmingSwitchOff = 1;
 			}
 		} 
-	}
-	buttonSec10Dist = 2;
+	
+//}
+//	buttonSec10Dist = 2;
 	prevPinA = PINA;
+	sei();
 }

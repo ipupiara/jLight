@@ -182,9 +182,11 @@ uStInt evProgramingChecker(void)
 //		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
 		// No event action.
 		
+		printf("start store on eeprom\n");
 		setStoreLight(on);
 		syncStoreMinuteBuffer(pCurrentMinuteBuffer);
 		setStoreLight(off);
+		printf("end store on eeprom\n");
 		
 //		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;

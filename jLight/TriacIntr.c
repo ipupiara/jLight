@@ -164,6 +164,7 @@ ISR(TIMER2_COMPA_vect)
 #define pidStepDelays  2    // 20 reads per second
 
 ISR(ADC_vect)
+
 {
 	lastAmpsADCVal = ADC;
 	++ adcCnt;
@@ -313,7 +314,7 @@ void startAmpsADC()
 	adcCnt = 0;
 
 
-		ADMUX = 0b01000001;
+		ADMUX = 0b01000000;
 
 	ADCSRA = 0b10101111;  
 							// int ena, prescale /128
@@ -324,6 +325,7 @@ void startAmpsADC()
 
 	ADCSRB = 0x03;  // no ACME, trigger ADC on Timer0 compare match
 
+	OCR0A = 0xFF; 
 	TCCR0B = 0b00000101  ; // CTC on CC0A , set clk / 1024, timer 0 started	  
 	TIMSK0  = 0b00000010;  // ena  interrupts, and let run ADC	
 }
