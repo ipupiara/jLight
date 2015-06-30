@@ -80,7 +80,7 @@ void setRecMode(uint8_t recM)
 	float ampsADCf = ampsADC;
 	float pctf = ampsADCf / 1024.0;
 	float triacFireDurationF = pctf * triggerDelayMax;
-	int16_t triacFireDurationI = triacFireDurationF;
+	int16_t triacFireDurationI = triacFireDurationF + 0.5;
 	setTriacFireDuration(triacFireDurationI);
 }
 

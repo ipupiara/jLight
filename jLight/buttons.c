@@ -28,7 +28,8 @@ void initButtons()
 	PCMSK0 |= (1<<PCINT7) | (1<< PCINT6) | (1<<PCINT5) |(1<<PCINT4) ;   // on PA4 .. PA7
 	
 	DDRA |= 0x0E;     // PA1 .. PA3   as output
-	DDRD |= 0x80;     //  PD7  as output
+	DDRD |= (1<< DDD7 );     //  PD7  as output
+	PORTD  &= ~(1<<PD7);  // PD7 set to 0
 	prevPinA = PINA;  
 }	
 

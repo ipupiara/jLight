@@ -167,9 +167,10 @@ ISR(ADC_vect)
 
 {
 	lastAmpsADCVal = ADC;
+	
 	++ adcCnt;
 
-	if (adcCnt == pidStepDelays)  {     
+	if (adcCnt >= pidStepDelays)  {     
 		adcCnt = 0;
 		adcTick = 1;
 	}
@@ -205,6 +206,9 @@ ISR(INT0_vect)
 
 ISR(TIMER0_COMPA_vect)
 {    // needed for ADC so far..
+//	cli();
+	//  	ADCSRA  |= (1<<ADSC);   // start one ADC cycle
+//	sei();
 }
 
 ISR(TIMER1_COMPA_vect)
@@ -221,14 +225,18 @@ ISR(TIMER1_COMPA_vect)
 
 void initInterrupts()
 {
+	printf("init interrupts\n");
+	cli();
 // Ext. Interrupt
 
 //		DDRA = 0b11110000;    // set pin 7 to 4 of port A as output for digital poti (zero adj)
 //		PORTA = 0b11100000;
-		DIDR0 = 0x0F;			// disa digital input on a0..a3
+//		DIDR0 = 0x0F;			// disa digital input on a0..a3
 
-		DDRD &= ~0x04;		// set PortD pin 2 as input for trigger Ext Int 0
-		PORTD &=  ~0x04;   // without pullup 
+		DIDR0 = (1<< ADC0D)  ;    // disa digital input on a0
+
+		DDRD &= ~(1<< DDD2 ) ;		// set PortD pin 2 as input for trigger Ext Int 0
+		PORTD &=  ~(1 << PD2 ) ;   // without pullup 
 
 		PORTD &= ~0x10; 		// done also before setting DDR to avoid eventual accidental triac trigger
 		DDRD |= 0x10;			// set Portd pin 04 be Triac output
@@ -309,12 +317,15 @@ void initInterrupts()
 
 void startAmpsADC()
 {
+	printf("start AMPS adc\n");
+	cli();
 	ADCSRA  = 0b00000111;  // disa ADC, ADATE, ADIE	
 	adcTick = 0;
 	adcCnt = 0;
 
+		DIDR0 = (1<< ADC0D)  ;
 
-		ADMUX = 0b01000000;
+//	ADCSRA  = (1<<ADEN) | (1<<ADIE) | (1<<ADPS1) | (1<<ADPS2) | (1<<ADPS0); //  now 64 prescaler wihout ps0 , 128 with ps0
 
 	ADCSRA = 0b10101111;  
 							// int ena, prescale /128
@@ -324,18 +335,17 @@ void startAmpsADC()
 							// or manuals start 
 
 	ADCSRB = 0x03;  // no ACME, trigger ADC on Timer0 compare match
+//	ADCSRB = 0x00 ;
+
+	
+	ADMUX = 0b01000000;
+
 
 	OCR0A = 0xFF; 
+	TCCR0A = (1<< WGM01);   // CTC on OCR0A
 	TCCR0B = 0b00000101  ; // CTC on CC0A , set clk / 1024, timer 0 started	  
 	TIMSK0  = 0b00000010;  // ena  interrupts, and let run ADC	
-}
-
-void stopAmpsADC()
-{
-	ADCSRA  = 0b00000111;  // disa ADC, ADATE, ADIE	
-
-	TCCR0B = 0b00000000  ; // stop timer 0	  
-	TIMSK0  = 0b00000000;  // 
+	sei();
 }
 
 void startTriacRun()
@@ -384,6 +394,19 @@ int16_t diffADCValue()
 	return res;
 }
 */
+
+
+void stopAmpsADC()
+{
+	printf("stop ampsadc\n");
+	cli();
+	ADCSRA  = 0b00000111;  // disa ADC, ADATE, ADIE
+
+	TCCR0B = 0b00000000  ; // stop timer 0
+	TIMSK0  = 0b00000000;  //
+	sei();
+}
+
 
 double adcVoltage()
 {
