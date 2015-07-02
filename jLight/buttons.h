@@ -35,4 +35,6 @@ void setStoreLight(int8_t toState);
 
 void setProgramingLight(int8_t toState);
 
+void checkProgramingButton();
+
 #endif /* BUTTONS_H_ */

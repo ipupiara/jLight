@@ -31,6 +31,8 @@
 	#define calibHighAmps       60
 
 	#define triggerDelayMax 810     // works properly with 50 Hz Ac and 11.0592 hz
+	
+	#define inductiveLoad   0
 
 
 // takes approx  2 us at 10 Mhz with -o0 (no opts. !) ,with all  call/ret, push N Pop

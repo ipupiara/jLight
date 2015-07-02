@@ -124,3 +124,14 @@ ISR(PCINT0_vect )
 	prevPinA = PINA;
 	sei();
 }
+
+
+void checkProgramingButton()
+{
+	if (PINA & (1<<PINA7)  ) {
+		programmingSwitchOn = 1;
+		printf("checkButtons found programingButton on\n");
+	}
+			
+
+}

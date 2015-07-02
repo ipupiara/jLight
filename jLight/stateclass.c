@@ -119,6 +119,7 @@ void entryTriacRunningState(void)
 	resetInterpolation();
 	setRecMode(play);
 	startTriacRun();
+	checkProgramingButton();
 }
 
 void exitTriacRunningState(void)
@@ -199,11 +200,13 @@ uStInt evProgramingChecker(void)
 void entryPrepareForRecState(void)
 {
 	printf("entry PrepareForRec\n");
+	startTriacRun();
 }
 
 void exitPrepareForRecState(void)
 {
 	printf("exit PrepareForRec\n");
+	stopTriacRun();
 }
 
 uStInt evPrepareForRecChecker(void)

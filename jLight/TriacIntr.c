@@ -147,12 +147,12 @@ ISR(TIMER2_COMPA_vect)
 	cli();
 	if (remainingTriacTriggerDelayCounts <= 0) {
 		PORTD |= 0x10;	
-		delay6pnt2d5us(1);   // approx 5 us of triac trigger , try later half or even less
+		delay6pnt2d5us(1);   // approx 5 us of triac trigger , try later half or even less  , measured 7 with oscilloscope
 		PORTD &= ~0x10;			// handled synchronous
-		if (triacTriggerDelayTime >= triggerDelayMax) {
+		if ((triacTriggerDelayTime >= triggerDelayMax) || (! inductiveLoad)  ) {
 			stopTimer2();
 		} else {
-			startTriacTriggerDelay(1);
+			startTriacTriggerDelay(2);
 		}
 	} else {
 		setTriacTriggerDelayValues();
@@ -179,7 +179,7 @@ ISR(ADC_vect)
 ISR(INT0_vect)
 {
 	cli();
-	if ((PIND & 0x04) != 0) {
+	if ((PIND & 0x04) == 0) {
 		immediateStopTriacTriggerDelay();			
 	} else {
 		triacTriggerDelayTime = 0;
@@ -189,7 +189,7 @@ ISR(INT0_vect)
 		++int0StartCnt;
 		if ((int0StartCnt % 10) == 0 ) {
 			sec10Tick = 1;
-			if (int0StartCnt >= 50) {
+			if (int0StartCnt >= 100) {
 				int0StartCnt = 0;
 			}
 			++sec10Cnt;
@@ -352,16 +352,21 @@ void startTriacRun()
 {
 //	startAmpsADC();
 	int0StartCnt = 0;
+	cli();
 	EIFR = 0x00;
-	EIMSK = 0x01;  				// start external interrupt (zero pass detection)
+	EIMSK = 0x01;  		
+	sei();		// start external interrupt (zero pass detection)
+	
+	printf("Triacrun started\n");
 }
 
 void stopTriacRun()
 {
-	EIMSK = 0x00;				// stop external interrupt
 	cli();
+	EIMSK = 0x00;				// stop external interrupt
 	immediateStopTriacTriggerDelay();
 	sei();
+	printf("triacrun stopped\n");
 //	stopAmpsADC();
 }
 
