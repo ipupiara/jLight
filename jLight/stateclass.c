@@ -89,28 +89,8 @@ uStInt evStartupChecker(void)
 				// No event action.
 			END_EVENT_HANDLER(PJLightTriacStateChart);
 			res =  uStIntHandlingDone;
-	}
-/*	if ((currentEvent->evType == evAstPressed) || (currentEvent->evType == evStartPressed))
-	{	
-			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateCalibrating);
-				// No event action.
-			END_EVENT_HANDLER(PJLightTriacStateChart);
-			res =  uStIntHandlingDone;
-	}
-	if (currentEvent->evType == evF1Pressed) 
-	{	
-			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateChangeCalibVars);
-				// No event action.
-			END_EVENT_HANDLER(PJLightTriacStateChart);
-			res =  uStIntHandlingDone;
-	}
-	if (currentEvent->evType == evSecondsTick) 
-	{	
-		displayCountDown();		
-		res =  uStIntHandlingDone;
-//		debugEvent1Triggered = 1;
-	}   */
-	return (res); 
+	} 
+	return (res);
 }
 
 
@@ -158,6 +138,7 @@ void entryProgramingState(void)
 	printf("entry Programing\n");
 	setProgramingLight(on);
 	startAmpsADC();
+	startTriacRun();
 }
 
 void exitProgramingState(void)
@@ -165,6 +146,7 @@ void exitProgramingState(void)
 	printf("exit Programing\n");
 	setProgramingLight(off);
 	stopAmpsADC();
+	stopTriacRun();
 }
 
 uStInt evProgramingChecker(void)
@@ -201,13 +183,11 @@ uStInt evProgramingChecker(void)
 void entryPrepareForRecState(void)
 {
 	printf("entry PrepareForRec\n");
-	startTriacRun();
 }
 
 void exitPrepareForRecState(void)
 {
 	printf("exit PrepareForRec\n");
-	stopTriacRun();
 }
 
 uStInt evPrepareForRecChecker(void)
@@ -247,8 +227,6 @@ void entryRecordState(void)
 	setRecMode(rec);
 	resetInterpolation();
 	setRecordLight(on);
-//	startAmpsADC();
-//	startTriacRun();
 }
 
 void exitRecordState(void)
@@ -256,8 +234,6 @@ void exitRecordState(void)
 	printf("exit Record\n");
 	setRecMode(play);
 	setRecordLight(off);
-//	stopTriacRun();
-//	stopAmpsADC();
 }
 
 uStInt evRecordChecker(void)
@@ -265,38 +241,14 @@ uStInt evRecordChecker(void)
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State Record\n");
 
-/*	
-	if (currentEvent->evType == evAdcTick)
-	{
-		setTriacDelayByADC();
-		//		displayCountDown();
-		res =  uStIntHandlingDone;
-	}
-	if (currentEvent->evType == evSec10Tick)
-	{
-		stepInterpolation();
-		//		displayCountDown();
-		res =  uStIntHandlingDone;
-	}
-*/	
-	
-	if (currentEvent->evType == evRecordButtonOff)
+	if (currentEvent->evType == evRecordButtonOff)  
 	{
 		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
 		// No event action.
 		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
 	}
-		
-	if (currentEvent->evType == evTimeoutRecord)
-	{
-		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeOut);
-		// No event action.
-		END_EVENT_HANDLER(PJLightTriacStateChart);
-		res =  uStIntHandlingDone;
-	}
-
-
+	
 	return (res);
 }
 
@@ -305,21 +257,15 @@ uStInt evRecordChecker(void)
 void entryRecordActiveState(void)
 {
 	printf("entry RecordActive\n");
-//	clearBuffer();
-//	setRecMode(rec);
-//	resetInterpolation();
-//	setRecordLight(on);
-	startAmpsADC();
+
 	startTriacRun();
 }
 
 void exitRecordActiveState(void)
 {
 	printf("exit RecordActive\n");
-//	setRecMode(play);
-//	setRecordLight(off);
+
 	stopTriacRun();
-	stopAmpsADC();
 }
 
 uStInt evRecordActiveChecker(void)
@@ -330,21 +276,11 @@ uStInt evRecordActiveChecker(void)
 	if (currentEvent->evType == evAdcTick)
 	{
 		setTriacDelayByADC();
-		//		displayCountDown();
 		res =  uStIntHandlingDone;
 	}
 	if (currentEvent->evType == evSec10Tick)
 	{
 		stepInterpolation();
-		//		displayCountDown();
-		res =  uStIntHandlingDone;
-	}
-/*	
-	if (currentEvent->evType == evRecordButtonOff)
-	{
-		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
-		// No event action.
-		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
 	}
 	
@@ -355,13 +291,8 @@ uStInt evRecordActiveChecker(void)
 		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
 	}
-*/
-
 	return (res);
 }
-
-
-
 
 void entryRecInTimeState(void)
 {
@@ -444,14 +375,6 @@ void exitRecTimeCriticalState(void)
 uStInt evRecTimeCriticalChecker(void)
 {
 	uStInt res = uStIntNoMatch;
-	//	printf("check for event in State RecTimeCritical\n");
-/*		if (currentEvent->evType == evTimeOutDurationTimer)
-		{
-			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeLow);
-			// No event action.
-			END_EVENT_HANDLER(PJLightTriacStateChart);
-			res =  uStIntHandlingDone;
-		}  */
 
 	if (currentEvent->evType == evSec10Tick)
 	{
@@ -469,7 +392,7 @@ uStInt evRecTimeCriticalChecker(void)
 void entryRecTimeOutState(void)
 {
 	printf("entry RecTimeOut\n");
-	startDurationTimer(5);
+	startDurationTimer(15);
 	setCompletionAlarmOn();
 }
 
@@ -527,9 +450,7 @@ uStInt evTestingChecker(void)
 	if (currentEvent->evType == evSec10Tick)
 	{
 		stepInterpolation();
-		//		displayCountDown();
 		res =  uStIntHandlingDone;
-		//		debugEvent1Triggered = 1;
 	}
 	
 	return (res);
@@ -637,7 +558,7 @@ xStateType xaStates[eNumberOfStates] = {
 	},
 	
 	{eStateRecordActive,
-		eStatePrograming ,
+		eStateRecord ,
 		eStateRecInTime,
 		0,
 		evRecordActiveChecker,
@@ -648,7 +569,7 @@ xStateType xaStates[eNumberOfStates] = {
 		
 	
 	{eStateRecInTime,
-		eStateRecord ,
+		eStateRecordActive ,
 		-1,
 		0,
 		evRecInTimeChecker,
@@ -658,7 +579,7 @@ xStateType xaStates[eNumberOfStates] = {
 	},
 
 	{eStateRecTimeLow,
-		eStateRecord ,
+		eStateRecordActive ,
 		-1,
 		0,
 		evRecTimeLowChecker,
@@ -668,7 +589,7 @@ xStateType xaStates[eNumberOfStates] = {
 	},
 	
 	{eStateRecTimeCritical,
-		eStateRecord ,
+		eStateRecordActive ,
 		-1,
 		0,
 		evRecTimeCriticalChecker,
@@ -678,7 +599,7 @@ xStateType xaStates[eNumberOfStates] = {
 	},
 	 
 	{eStateRecTimeOut,
-		eStatePrograming ,
+		eStateRecord ,
 		-1,
 		0,
 		evRecTimeOutChecker,

@@ -88,11 +88,10 @@ void setEndGap()
 {
 	int16_t  endDiff;
 	int16_t cnt;
-	int16_t amtSteps;
 	float stepWidth;
 	if ( (endDiff = pCurrentMinuteBuffer->data.buffer[currentPos] -  pCurrentMinuteBuffer->data.buffer[0]) >  5  ){
-		stepWidth = endDiff / ( amtSteps = (endGapSize * 10));
-		for(cnt = 0; cnt < amtSteps; ++ cnt )  {
+		stepWidth = endDiff / endGapSize ;
+		for(cnt = 0; cnt < endGapSize; ++ cnt )  {
 			pCurrentMinuteBuffer->data.buffer[currentPos] =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
 			++currentPos;
 		}
