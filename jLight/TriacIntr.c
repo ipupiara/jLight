@@ -147,12 +147,12 @@ ISR(TIMER2_COMPA_vect)
 	cli();
 	if (remainingTriacTriggerDelayCounts <= 0) {
 		PORTD |= 0x10;	
-		delay6pnt2d5us(1);   // approx 5 us of triac trigger , try later half or even less  , measured 7 with oscilloscope
+		delay6pnt2d5us(triacTriggerLength);   // approx 5 us of triac trigger , try later half or even less  , measured 7 with oscilloscope
 		PORTD &= ~0x10;			// handled synchronous
 		if ((triacTriggerDelayTime >= triggerDelayMax) || (! inductiveLoad)  ) {
 			stopTimer2();
 		} else {
-			startTriacTriggerDelay(2);
+			startTriacTriggerDelay(delayBetweenTriacTriggers);
 		}
 	} else {
 		setTriacTriggerDelayValues();

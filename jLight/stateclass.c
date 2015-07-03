@@ -31,6 +31,7 @@ enum eStates
 	eStatePrograming,
 	eStatePrepareForRec,
 	eStateRecord,
+	eStateRecordActive,
 	eStateRecInTime,
 	eStateRecTimeLow,
 	eStateRecTimeCritical,
@@ -246,6 +247,8 @@ void entryRecordState(void)
 	setRecMode(rec);
 	resetInterpolation();
 	setRecordLight(on);
+//	startAmpsADC();
+//	startTriacRun();
 }
 
 void exitRecordState(void)
@@ -253,27 +256,29 @@ void exitRecordState(void)
 	printf("exit Record\n");
 	setRecMode(play);
 	setRecordLight(off);
+//	stopTriacRun();
+//	stopAmpsADC();
 }
 
 uStInt evRecordChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State Record\n");
-	
+
+/*	
 	if (currentEvent->evType == evAdcTick)
 	{
 		setTriacDelayByADC();
 		//		displayCountDown();
 		res =  uStIntHandlingDone;
-		//		debugEvent1Triggered = 1;
 	}
 	if (currentEvent->evType == evSec10Tick)
 	{
 		stepInterpolation();
 		//		displayCountDown();
 		res =  uStIntHandlingDone;
-		//		debugEvent1Triggered = 1;
 	}
+*/	
 	
 	if (currentEvent->evType == evRecordButtonOff)
 	{
@@ -294,6 +299,68 @@ uStInt evRecordChecker(void)
 
 	return (res);
 }
+
+
+
+void entryRecordActiveState(void)
+{
+	printf("entry RecordActive\n");
+//	clearBuffer();
+//	setRecMode(rec);
+//	resetInterpolation();
+//	setRecordLight(on);
+	startAmpsADC();
+	startTriacRun();
+}
+
+void exitRecordActiveState(void)
+{
+	printf("exit RecordActive\n");
+//	setRecMode(play);
+//	setRecordLight(off);
+	stopTriacRun();
+	stopAmpsADC();
+}
+
+uStInt evRecordActiveChecker(void)
+{
+	uStInt res = uStIntNoMatch;
+	//	printf("check for event in State Record\n");
+	
+	if (currentEvent->evType == evAdcTick)
+	{
+		setTriacDelayByADC();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+	}
+	if (currentEvent->evType == evSec10Tick)
+	{
+		stepInterpolation();
+		//		displayCountDown();
+		res =  uStIntHandlingDone;
+	}
+/*	
+	if (currentEvent->evType == evRecordButtonOff)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStatePrepareForRec);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+	
+	if (currentEvent->evType == evTimeoutRecord)
+	{
+		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateRecTimeOut);
+		// No event action.
+		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
+*/
+
+	return (res);
+}
+
+
 
 
 void entryRecInTimeState(void)
@@ -561,13 +628,24 @@ xStateType xaStates[eNumberOfStates] = {
 	
 	{eStateRecord,
 		eStatePrograming ,
-		eStateRecInTime,
+		eStateRecordActive,
 		0,
 		evRecordChecker,
 		tfNull,
 		entryRecordState,
 		exitRecordState
 	},
+	
+	{eStateRecordActive,
+		eStatePrograming ,
+		eStateRecInTime,
+		0,
+		evRecordActiveChecker,
+		tfNull,
+		entryRecordActiveState,
+		exitRecordActiveState
+	},
+		
 	
 	{eStateRecInTime,
 		eStateRecord ,
