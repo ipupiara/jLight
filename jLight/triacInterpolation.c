@@ -5,9 +5,21 @@
  *  Author: ixchel
  */ 
 
+#include <avr/io.h>
+#include <stdio.h>
+
 #include "string.h"
 #include "triacInterpolation.h"
 #include "TriacIntr.h"
+
+
+int16_t keepValue(uint16_t  triacValue)
+{
+	pCurrentMinuteBuffer->data.buffer[currentPos] = triacValue;
+	++pCurrentMinuteBuffer->data.amtEntries;
+	++ currentPos;
+	return triacValue;
+}
 
 
 int16_t getAndKeepCurrentValue()
@@ -15,8 +27,7 @@ int16_t getAndKeepCurrentValue()
 	uint16_t  triacValue;  
 
 	triacValue = getTriacFireDuration();
-	pCurrentMinuteBuffer->data.buffer[currentPos] = triacValue;
-	++pCurrentMinuteBuffer->data.amtEntries;
+	keepValue(triacValue);
 	return triacValue;
 }
 
@@ -58,12 +69,10 @@ void stepInterpolation()
 		}
 		retrieveStoredValue();
 	} else if(currentRecMode == rec)  {
-		if (currentPos <   maxDataAmt - endGapSize ) {   // tobe reviewed  ??
+		if (currentPos <   maxDataAmt - endGapSize ) {   
 			getAndKeepCurrentValue();
-			++ currentPos;
 		}   else {
 			timeoutRecord = 1;
-			setEndGap();
 		}
 	}
 //	calcInterpolation();
@@ -89,14 +98,16 @@ void setEndGap()
 	int16_t  endDiff;
 	int16_t cnt;
 	float stepWidth;
+	int16_t triacValue;
+	printf("setEndGap\n");
 	if ( (endDiff = pCurrentMinuteBuffer->data.buffer[currentPos] -  pCurrentMinuteBuffer->data.buffer[0]) >  5  ){
 		stepWidth = endDiff / endGapSize ;
 		for(cnt = 0; cnt < endGapSize; ++ cnt )  {
-			pCurrentMinuteBuffer->data.buffer[currentPos] =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
-			++currentPos;
+			triacValue =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
+			keepValue(triacValue);
 		}
-		pCurrentMinuteBuffer->data.buffer[currentPos] = pCurrentMinuteBuffer->data.buffer[0];
-		++ currentPos;
+		triacValue = pCurrentMinuteBuffer->data.buffer[0];
+		keepValue(triacValue);
 	}
 }
 

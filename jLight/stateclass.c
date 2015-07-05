@@ -161,21 +161,6 @@ uStInt evProgramingChecker(void)
 		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
 	}
-	if (currentEvent->evType == evStoreButtonPressed)
-	{
-//		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
-		// No event action.
-		
-		printf("start store on eeprom\n");
-		setStoreLight(on);
-		syncStoreMinuteBuffer(pCurrentMinuteBuffer);
-		setStoreLight(off);
-		printf("end store on eeprom\n");
-		
-//		END_EVENT_HANDLER(PJLightTriacStateChart);
-		res =  uStIntHandlingDone;
-	}
-
 	return (res);
 }
 
@@ -232,8 +217,10 @@ void entryRecordState(void)
 void exitRecordState(void)
 {
 	printf("exit Record\n");
+	setEndGap();
 	setRecMode(play);
 	setRecordLight(off);
+	setCompletionAlarmOff();
 }
 
 uStInt evRecordChecker(void)
@@ -257,16 +244,13 @@ uStInt evRecordChecker(void)
 void entryRecordActiveState(void)
 {
 	printf("entry RecordActive\n");
-
-	startTriacRun();
 }
 
 void exitRecordActiveState(void)
 {
 	printf("exit RecordActive\n");
-
-	stopTriacRun();
 }
+
 
 uStInt evRecordActiveChecker(void)
 {
@@ -452,7 +436,20 @@ uStInt evTestingChecker(void)
 		stepInterpolation();
 		res =  uStIntHandlingDone;
 	}
-	
+	if (currentEvent->evType == evStoreButtonPressed)
+	{
+		//		BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
+		// No event action.
+			
+		printf("start store on eeprom\n");
+		setStoreLight(on);
+		syncStoreMinuteBuffer(pCurrentMinuteBuffer);
+		setStoreLight(off);
+		printf("end store on eeprom\n");
+			
+		//		END_EVENT_HANDLER(PJLightTriacStateChart);
+		res =  uStIntHandlingDone;
+	}
 	return (res);
 }
 
