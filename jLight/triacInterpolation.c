@@ -7,6 +7,8 @@
 
 #include <avr/io.h>
 #include <stdio.h>
+#include <math.h>
+#include <stdlib.h>
 
 #include "string.h"
 #include "triacInterpolation.h"
@@ -21,7 +23,7 @@ int16_t keepValue(uint16_t  triacValue)
 }
 
 
-int16_t getAndKeepCurrentValue()
+int16_t setAndKeepCurrentValue()
 {
 	uint16_t  triacValue;  
 
@@ -61,7 +63,7 @@ void stepInterpolation()
 	}
 	
 	if (currentRecMode == play) {
-		if(currentPos >= currentMinuteBuffer.data.amtEntries) {
+		if(currentPos >= currentMinuteBuffer.data.amtEntries - 1) {
 			resetInterpolation();
 		} else {
 			++ currentPos;	
@@ -69,7 +71,7 @@ void stepInterpolation()
 		retrieveStoredValue();
 	} else if(currentRecMode == rec)  {
 		if (currentPos <   maxDataAmt - endGapSize ) {   
-			getAndKeepCurrentValue();
+			setAndKeepCurrentValue();
 			++ currentPos;
 		}   else {
 			timeoutRecord = 1;
@@ -95,21 +97,21 @@ void setRecMode(uint8_t recM)
 
 void setEndGap()
 {
-	int16_t  endDiff;
-
+	int16_t  endDiff  = pCurrentMinuteBuffer->data.buffer[currentPos-1] -  pCurrentMinuteBuffer->data.buffer[0];
 	printf("setEndGap\n");
-	if ( (endDiff = pCurrentMinuteBuffer->data.buffer[currentPos-1] -  pCurrentMinuteBuffer->data.buffer[0]) >  5  ){
+	if ( abs(endDiff) >  5  ){
 		int16_t cnt;
 		int16_t triacValue;
 		float endDiffF = endDiff;
 		float endGapSizeF = endGapSize;
 		float stepWidth = endDiffF / endGapSizeF ;
-		printf("endDiffF %11.3f  endGapSizeF %11.3f\n  stepWith %11.3f",endDiffF,endGapSizeF,stepWidth);    // line for testing and debugging only
+		printf("endDiffF %11.3f  endGapSizeF %11.3f\n  stepWith %11.3f\n",endDiffF,endGapSizeF,stepWidth);    // line for testing and debugging only
 		for(cnt = 0; cnt < endGapSize; ++ cnt )  {
-			float triacValueF =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
+			float triacValueF =  pCurrentMinuteBuffer->data.buffer[currentPos-1] - stepWidth;
 			triacValue = triacValueF + 0.5;
 			printf("setEndGap %i th value: %f11.3 -->  %i\n",cnt,triacValueF, triacValue);   // line for debugging and testing used only
 			keepValue(triacValue);
+			++currentPos;
 		}
 		triacValue = pCurrentMinuteBuffer->data.buffer[0];
 		keepValue(triacValue);
