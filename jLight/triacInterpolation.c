@@ -96,14 +96,19 @@ void setRecMode(uint8_t recM)
 void setEndGap()
 {
 	int16_t  endDiff;
-	int16_t cnt;
-	float stepWidth;
-	int16_t triacValue;
+
 	printf("setEndGap\n");
 	if ( (endDiff = pCurrentMinuteBuffer->data.buffer[currentPos-1] -  pCurrentMinuteBuffer->data.buffer[0]) >  5  ){
-		stepWidth = endDiff / endGapSize ;
+		int16_t cnt;
+		int16_t triacValue;
+		float endDiffF = endDiff;
+		float endGapSizeF = endGapSize;
+		float stepWidth = endDiffF / endGapSizeF ;
+		printf("endDiffF %11.3f  endGapSizeF %11.3f\n  stepWith %11.3f",endDiffF,endGapSizeF,stepWidth);    // line for testing and debugging only
 		for(cnt = 0; cnt < endGapSize; ++ cnt )  {
-			triacValue =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
+			float triacValueF =  pCurrentMinuteBuffer->data.buffer[currentPos-1] + stepWidth;
+			triacValue = triacValueF + 0.5;
+			printf("setEndGap %i th value: %f11.3 -->  %i\n",cnt,triacValueF, triacValue);   // line for debugging and testing used only
 			keepValue(triacValue);
 		}
 		triacValue = pCurrentMinuteBuffer->data.buffer[0];
