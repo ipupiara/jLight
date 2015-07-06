@@ -175,7 +175,6 @@ void exitPrepareForRecState(void)
 	printf("exit PrepareForRec\n");
 }
 
-int8_t adcCount;
 
 uStInt evPrepareForRecChecker(void)
 {
@@ -186,12 +185,6 @@ uStInt evPrepareForRecChecker(void)
 	{
 		setTriacDelayByADC();
 		res =  uStIntHandlingDone;
-		++adcCount;
-		if (adcCount > 0x30)  {
-			int16_t adcV = getTriacFireDuration();
-			adcCount = 0;
-			printf("adc: %x\n",adcV);
-		}
 	}
 	if (currentEvent->evType == evRecordButtonOn)
 	{
