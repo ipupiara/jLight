@@ -98,6 +98,7 @@ void entryTriacRunningState(void)
 {
 	printf("entry eStateTriacRunning\n");
 	resetInterpolation();
+	syncRestoreMinuteBuffer(pCurrentMinuteBuffer);
 	setRecMode(play);
 	startTriacRun();
 	checkProgramingButton();
@@ -353,6 +354,7 @@ void entryRecTimeCriticalState(void)
 void exitRecTimeCriticalState(void)
 {
 	printf("exit RecTimeCritical\n");
+	setCompletionAlarmOff();
 }
 
 uStInt evRecTimeCriticalChecker(void)

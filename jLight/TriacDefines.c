@@ -222,7 +222,7 @@ void restorePersistentData()
 	pCurrentMinuteBuffer = &currentMinuteBuffer;
 	eepromAccessErrorOcurred = 0;
     fatalErrorOccurred = 0;
-	syncRestoreMinuteBuffer(pCurrentMinuteBuffer);
+//	syncRestoreMinuteBuffer(pCurrentMinuteBuffer);
 }
  
 int8_t syncStoreMinuteBuffer(pMinuteBuffer pMinB)
