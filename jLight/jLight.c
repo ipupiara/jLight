@@ -114,11 +114,11 @@ int main(void)
 			processTriacEvent(&SJLightTriacStateChart,&ev);	
 		}
 
-		if (sec10Tick) {
+		if (sec5Tick) {
 			//		cli();   // 8-bit access is alread atomic
-			sec10Tick = 0;
+			sec5Tick = 0;
 			//		sei();
-			ev.evType = evSec10Tick;
+			ev.evType = evSec5Tick;
 			processTriacEvent(&SJLightTriacStateChart,&ev);
 		}
 

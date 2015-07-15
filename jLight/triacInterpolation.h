@@ -14,8 +14,8 @@
 #include <util/atomic.h>
 #include "TriacDefines.h"
 
-#define maxDataAmt    57 * 10
-#define endGapSize    2* 10
+#define maxDataAmt    180 * 5
+#define endGapSize    3* 5
 
 enum recMode  {
 	rec,
@@ -26,7 +26,6 @@ uint8_t currentRecMode;
 
 uint16_t currentSec;
 uint8_t currentSec10;
-uint16_t currentPos;
 
 uint8_t timeoutRecord;
 

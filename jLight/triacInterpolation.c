@@ -14,11 +14,13 @@
 #include "triacInterpolation.h"
 #include "TriacIntr.h"
 
+uint16_t currentPos;
 
 int16_t keepValue(uint16_t  triacValue)
 {
 	pCurrentMinuteBuffer->data.buffer[currentPos] = triacValue;
 	++pCurrentMinuteBuffer->data.amtEntries;
+	++currentPos;
 	return triacValue;
 }
 
@@ -38,6 +40,7 @@ void retrieveStoredValue()
 
 	triacValue = pCurrentMinuteBuffer->data.buffer[currentPos];
 	setTriacFireDuration(triacValue);
+	++currentPos;
 }
 
 
@@ -63,16 +66,13 @@ void stepInterpolation()
 	}
 	
 	if (currentRecMode == play) {
-		if(currentPos >= currentMinuteBuffer.data.amtEntries - 1) {
+		if(currentPos > currentMinuteBuffer.data.amtEntries - 1) {
 			resetInterpolation();
-		} else {
-			++ currentPos;	
-		}
+		} 
 		retrieveStoredValue();
 	} else if(currentRecMode == rec)  {
 		if (currentPos <   maxDataAmt - endGapSize ) {   
 			setAndKeepCurrentValue();
-			++ currentPos;
 		}   else {
 			timeoutRecord = 1;
 		}
@@ -111,7 +111,6 @@ void setEndGap()
 			triacValue = triacValueF + 0.5;
 			printf("setEndGap %i th value: %f11.3 -->  %i\n",cnt,triacValueF, triacValue);   // line for debugging and testing used only
 			keepValue(triacValue);
-			++currentPos;
 		}
 		triacValue = pCurrentMinuteBuffer->data.buffer[0];
 		keepValue(triacValue);

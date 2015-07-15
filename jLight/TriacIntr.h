@@ -13,8 +13,8 @@ int8_t durationTimerReachead;
 int8_t runningSecondsTick;
 
 int8_t adcTick;
-int8_t sec10Tick;
-uint8_t sec10Cnt;
+int8_t sec5Tick;
+uint8_t sec5Cnt;
 uint8_t buttonSec10Dist;
 void startAmpsADC();
 void stopAmpsADC();

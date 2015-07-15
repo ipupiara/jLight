@@ -187,14 +187,14 @@ ISR(INT0_vect)
 			startTriacTriggerDelay(  triggerDelayMax - triacFireDurationCms);
 		}
 		++int0StartCnt;
-		if ((int0StartCnt % 10) == 0 ) {
-			sec10Tick = 1;
+		if ((int0StartCnt % 5) == 0 ) {
+			sec5Tick = 1;
 			if (int0StartCnt >= 100) {
 				int0StartCnt = 0;
 			}
-			++sec10Cnt;
-			if (sec10Cnt > 9) {
-				sec10Cnt = 0;
+			++sec5Cnt;
+			if (sec5Cnt > 9) {
+				sec5Cnt = 0;
 			}
 			if(buttonSec10Dist >0 ) {
 				--buttonSec10Dist;
@@ -306,8 +306,8 @@ void initInterrupts()
 		adcCnt = 0;
 		lastAmpsADCVal = 0;
 		
-		sec10Cnt = 0;
-		sec10Tick = 0;
+		sec5Cnt = 0;
+		sec5Tick = 0;
 		buttonSec10Dist = 0;
 
 		sei();  // start interrupts if not yet started

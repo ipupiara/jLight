@@ -13,7 +13,7 @@ enum eEventTypes
 {
 	evTimeOutDurationTimer,
 	evSecondsTick,
-	evSec10Tick,
+	evSec5Tick,
 	evAdcTick,
 	evProgrammingSwitchOn,
 	evProgrammingSwitchOff,

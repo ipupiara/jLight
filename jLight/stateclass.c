@@ -115,7 +115,7 @@ uStInt evTriacRunningChecker(void)
 	uStInt res = uStIntNoMatch;
 	//	printf("check for event in State evStateIdle\n");
 	
-	if (currentEvent->evType == evSec10Tick)
+	if (currentEvent->evType == evSec5Tick)
 	{
 		stepInterpolation();
 //		displayCountDown();
@@ -262,7 +262,7 @@ uStInt evRecordActiveChecker(void)
 		setTriacDelayByADC();
 		res =  uStIntHandlingDone;
 	}
-	if (currentEvent->evType == evSec10Tick)
+	if (currentEvent->evType == evSec5Tick)
 	{
 		stepInterpolation();
 		res =  uStIntHandlingDone;
@@ -281,7 +281,7 @@ uStInt evRecordActiveChecker(void)
 void entryRecInTimeState(void)
 {
 	printf("entry RecInTime\n");
-	startDurationTimer(40);
+	startDurationTimer(80);
 }
 
 void exitRecInTimeState(void)
@@ -310,7 +310,7 @@ uStInt evRecInTimeChecker(void)
 void entryRecTimeLowState(void)
 {
 	printf("entry RecTimeLow\n");
-	startDurationTimer(10);
+	startDurationTimer(20);
 }
 
 void exitRecTimeLowState(void)
@@ -333,9 +333,9 @@ uStInt evRecTimeLowChecker(void)
 		res =  uStIntHandlingDone;
 	}
 
-	if (currentEvent->evType == evSec10Tick)
+	if (currentEvent->evType == evSec5Tick)
 	{
-		if ( (sec10Cnt < 2) ) {
+		if ( (sec5Cnt < 1) ) {
 			setCompletionAlarmOn();
 		} else {
 			setCompletionAlarmOff();
@@ -361,9 +361,9 @@ uStInt evRecTimeCriticalChecker(void)
 {
 	uStInt res = uStIntNoMatch;
 
-	if (currentEvent->evType == evSec10Tick)
+	if (currentEvent->evType == evSec5Tick)
 	{
-		if ( sec10Cnt < 6   ) {
+		if ( sec5Cnt < 3   ) {
 			setCompletionAlarmOn();
 		} else {
 			setCompletionAlarmOff();
@@ -432,7 +432,7 @@ uStInt evTestingChecker(void)
 		res =  uStIntHandlingDone;
 	}
 
-	if (currentEvent->evType == evSec10Tick)
+	if (currentEvent->evType == evSec5Tick)
 	{
 		stepInterpolation();
 		res =  uStIntHandlingDone;

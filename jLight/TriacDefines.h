@@ -62,7 +62,7 @@ void restorePersistentData();
 		union {
 			struct data {
 				uint16_t  amtEntries;
-				uint16_t buffer [600];
+				uint16_t buffer [180 * 5 ];    // seconds * values per sec 
 			} data;
 			uint8_t  dataBytes [1];
 		} ;
