@@ -280,19 +280,18 @@ uStInt evRecordActiveChecker(void)
 	}
 	
 	if ((currentEvent->evType == evSecondsTick) && ((getSecondsInDurationTimer() & 0x1F) == 0x00))     // all 32 seconds (if event is not handled in substate, 
-																											// because there is no matter if event is lost, we dont urgently need  this printout  ....)
+																											//  there is no matter if event is lost, we dont urgently need  this printout  ....)
 	{
 		uint16_t  unUsedMem;
-		float unUsedMemF;
 		uint16_t usedMem;
 		float  usedMemF;
 		float     pct;
 		
 		unUsedMem = unUsedMemory();
-		usedMem   = 0x400 - unUsedMem;
-		unUsedMemF = (float) unUsedMem;
+		usedMem   = storageBufferSize - unUsedMem;
 		usedMemF = (float) usedMem;			//  had sometimes problems to convert into float
-		printf("memory used %5u of %5u, what makes %3.1f percent ",);	
+		pct = (usedMemF / storageBufferSize) * 100;
+		printf("memory used %5u of %5u, what makes %5.1f percent \n",usedMem,storageBufferSize,pct);	
 	}
 	return (res);
 }

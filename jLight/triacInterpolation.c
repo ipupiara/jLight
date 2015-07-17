@@ -18,7 +18,7 @@ uint8_t currentRecMode;
 
 typedef struct StorageRecord  {
 	int16_t val;
-	int8_t  reps;
+	uint8_t  reps;
 } StorageRecord ;
 typedef  StorageRecord *  PStorageRecord;
 
@@ -48,6 +48,7 @@ int16_t  amtRepsOfRec(PStorageRecord pStoR)
 	if (pStoR->val & 0x8000)  {
 		res = pStoR->reps;
 	}
+//	printf("reps %i",res);
 	return res;
 }
 
@@ -73,7 +74,7 @@ int16_t unUsedMemory()
 int8_t storageBufferLow()
 {
 	int8_t res = 0;
-	res = (unUsedMemory() < bufferLowSize);
+	res = (unUsedMemory() < bufferLowThreshold);
 	
 	return res;
 }
@@ -81,14 +82,14 @@ int8_t storageBufferLow()
 int8_t storageBufferCritical()
 {
 	int8_t res = 0;
-	res = (unUsedMemory() < bufferCriticalSize);
+	res = (unUsedMemory() < bufferCriticalThreshold);
 	return res;
 }
 
 int8_t storageBufferTimeout()
 {
 	int8_t res = 0;
-	res = (unUsedMemory() < bufferTimeoutSize);
+	res = (unUsedMemory() < bufferTimeoutThreshold);
 	return res;
 }
 
@@ -129,9 +130,11 @@ int16_t getNextValue()
 
 int16_t keepValue(uint16_t  triacValue)
 {
-	int16_t d1Val;
-	int16_t repsVal;
-	if ((currentRecP == NULL)  || ( (d1Val = valueOfRec((PStorageRecord )currentRecP)) != triacValue ) 
+	int16_t d1Val = 0;
+	int16_t absDiff = 0 ;        // difference usually induced by ADC of chip 
+	int16_t repsVal = 0;
+	
+	if ((currentRecP == NULL)  || ( (absDiff= abs( (d1Val = valueOfRec((PStorageRecord )currentRecP))  - triacValue ) ) > 1 )          
 			|| ( (repsVal = amtRepsOfRec((PStorageRecord )currentRecP)) > 250 )  )    { ////// args to go on next
 		
 		currentRecP = nextRecP;
@@ -171,6 +174,7 @@ void retrieveNextStoredValue()
 void resetInterpolation()
 {
 	pCurrentStorageBuffer = &currentStorageBuffer;
+	currentStorageBuffer.data.endByte = 0xE3;
 	currentRecP = NULL;
 	nextRecP  =  (int8_t *)   &currentStorageBuffer.data.buffer;
 	endRecP  =  (int8_t *)   &currentStorageBuffer.data.endByte;

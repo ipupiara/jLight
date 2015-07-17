@@ -58,10 +58,10 @@ void restorePersistentData();
 
 
 #define endGapSize         10
-#define storageBufferSize  1800
-#define bufferLowSize       500
-#define bufferCriticalSize  250
-#define bufferTimeoutSize   100
+#define storageBufferSize  2000
+#define bufferLowThreshold       500
+#define bufferCriticalThreshold  250
+#define bufferTimeoutThreshold   100
 	
 	typedef struct StorageBuffer
 	{
