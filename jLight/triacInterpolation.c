@@ -30,8 +30,11 @@ int16_t	recordCounter;
 int8_t	remainingReps;
 
 
+
 int16_t valueOfRec(PStorageRecord pStoR)
 {
+
+
 	int16_t res = 0;
 	res =  ( pStoR->val  &  ~0x8000);
 	return res;	
