@@ -83,6 +83,7 @@ uStInt evStartupChecker(void)
 	uStInt res = uStIntNoMatch;
 //	printf("check for event in State evStateIdle\n");
 
+
 	if (currentEvent->evType == evTimeOutDurationTimer) 
 	{	
 			BEGIN_EVENT_HANDLER(PJLightTriacStateChart, eStateTriacRunning);
@@ -101,6 +102,7 @@ void entryTriacRunningState(void)
 	syncRestoreStorageBuffer(pCurrentStorageBuffer);
 	setRecMode(play);
 	startTriacRun();
+	startDurationTimer(maxSecsPossible);   // enable secondsTick
 	checkProgramingButton();
 }
 
@@ -108,6 +110,7 @@ void exitTriacRunningState(void)
 {
 	printf("exit triacRunningState\n");
 	stopTriacRun();
+	stopDurationTimer();
 }
 
 uStInt evTriacRunningChecker(void)
@@ -274,6 +277,22 @@ uStInt evRecordActiveChecker(void)
 		// No event action.
 		END_EVENT_HANDLER(PJLightTriacStateChart);
 		res =  uStIntHandlingDone;
+	}
+	
+	if ((currentEvent->evType == evSecondsTick) && ((getSecondsInDurationTimer() & 0x1F) == 0x00))     // all 32 seconds (if event is not handled in substate, 
+																											// because there is no matter if event is lost, we dont urgently need  this printout  ....)
+	{
+		uint16_t  unUsedMem;
+		float unUsedMemF;
+		uint16_t usedMem;
+		float  usedMemF;
+		float     pct;
+		
+		unUsedMem = unUsedMemory();
+		usedMem   = 0x400 - unUsedMem;
+		unUsedMemF = (float) unUsedMem;
+		usedMemF = (float) usedMem;			//  had sometimes problems to convert into float
+		printf("memory used %5u of %5u, what makes %3.1f percent ",);	
 	}
 	return (res);
 }

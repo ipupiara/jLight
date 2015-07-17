@@ -29,12 +29,8 @@ int8_t*  endRecP;
 int16_t	recordCounter;
 int8_t	remainingReps;
 
-
-
 int16_t valueOfRec(PStorageRecord pStoR)
 {
-
-
 	int16_t res = 0;
 	res =  ( pStoR->val  &  ~0x8000);
 	return res;	
@@ -117,7 +113,7 @@ int16_t getNextValue()
 		--remainingReps;
 	} else
 	{
-		if (recordCounter > pCurrentStorageBuffer->data.amtEntries) {
+		if (recordCounter >= pCurrentStorageBuffer->data.amtEntries) {
 			resetInterpolation();
 		}
 		currentRecP = nextRecP;

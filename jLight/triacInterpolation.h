@@ -36,4 +36,6 @@ int8_t storageBufferLow();
 
 int8_t storageBufferCritical();
 
+int16_t unUsedMemory();
+
 #endif /* TRIACINTERPOLATION_H_ */
